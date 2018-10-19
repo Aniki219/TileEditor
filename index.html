@@ -1,13 +1,27 @@
 <head>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.dom.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
   <link rel="stylesheet" href="index.css">
+
+  <script src='spectrum.js'></script>
+  <link rel='stylesheet' href='spectrum.css' />
 </head>
 
 <body>
   <div id="myCanvas"></div>
-  <ul id="buttonList">
-    <div id="listTitle">Tiles</div>
-  </ul>
+  <div id="buttonList">
+    <ul id="buttons">
+      <div id="listTitle">Tiles</div>
+    </ul>
+    <input id="addInput">
+      <button id="add">Add Tile</button>
+    </input>
+    <input id="addColor"></input>
+    <input id="gridSizeInput">
+      <button id="gridSizeBtn">Set gridSize</button>
+    </input>
+  </div>
+
   <script src="index.js"></script>
 </body>

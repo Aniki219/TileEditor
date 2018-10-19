@@ -3,16 +3,43 @@
 }
 
 #buttonList {
-  list-style: none;
   display: inline-block;
   width: 25%;
   margin: 0px;
-  padding: 0px;
+
   vertical-align: top;
+}
+
+#buttonList ul{
+  list-style: none;
+  padding: 0px;
 }
 
 #buttonList li {
   height:50px;
   margin: 2px;
   border: 1px solid black;
+  background-color: white;
+}
+
+.colorTag {
+  width:25px;
+  height: 100%;
+  display: inline-block;
+}
+
+.label {
+  display: inline-block;
+  vertical-align: middle;
+  height: 100%;
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+.editBtn, .deleteBtn {
+  float:right;
+}
+
+#buttonList li:hover{
+  background-color: rgb(250,250,200);
 }
