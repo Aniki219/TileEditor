@@ -9,19 +9,44 @@
 </head>
 
 <body>
-  <div id="myCanvas"></div>
-  <div id="buttonList">
-    <ul id="buttons">
-      <div id="listTitle">Tiles</div>
+  <div class="toolbar">
+    <ul>
+      <li>
+        <input id="gridSizeInput">
+          <button id="gridSizeBtn">Set gridSize</button>
+        </input>
+      </li>
     </ul>
-    <input id="addInput">
-      <button id="add">Add Tile</button>
-    </input>
-    <input id="addColor"></input>
-    <input id="gridSizeInput">
-      <button id="gridSizeBtn">Set gridSize</button>
-    </input>
   </div>
+  <div id="buttonList">
+    <div id="listTitle">Tiles</div>
+    <ul id="buttons"></ul>
+
+    <div id="addButtons">
+      <p>
+        Name:
+        <input id="addName"></input>
+      </p>
+      <p>
+        Width:
+        <input id="addWidth" value=25></input>
+        Height:
+        <input id="addHeight" value=25></input>
+      </p>
+      <p>
+        Tile Color:
+        <input id="addColor"></input>
+      </p>
+      <button id="add">Add Tile</button>
+    </div>
+
+    <script>
+      document.addEventListener('contextmenu', event => event.preventDefault());
+    </script>
+  </div>
+
+  <div id="myCanvas"></div>
+  <button id="resize">Resize</button>
 
   <script src="index.js"></script>
 </body>

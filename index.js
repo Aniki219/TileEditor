@@ -1,40 +1,81 @@
 var buttons = [];
 var addButton, gridSizeBtn, gridSizeInput;
 var gridSize = 25;
-var currentBlockType = null;
-var currentBlockColor;
-var currentBlock = {};
+var currentBlock;
 var grid = [];
+var register = {};
+var numCols;
+var numRows;
 
 
 function setup() {
   let canvas = createCanvas(500,500);
   currentBlockColor = color(200,0,0);
   canvas.parent("myCanvas")
-  addTile("Player", "blue");
-  addTile("Wall", "brown");
-  addTile("Hole", "black");
-  addTile("Enemy", "red");
+  addTile({name: "Player", color: "rgb(0,0,255)"});
+  addTile({name: "Wall", color: "brown"});
+  addTile({name: "Hole", color: "black"});
+  addTile({name: "Enemy", color: "red"});
   addButton = select("#add");
   gridSizeBtn = select("#gridSizeBtn");
   gridSizeInput = select("#gridSizeInput");
+  resize = select("#resize");
+
+  numCols = width/gridSize;
+  numRows = height/gridSize;
+
+  let randColor = `rgb(${floor(random(256))}, ${floor(random(256))}, ${floor(random(256))})`
+  select("#addColor").value(randColor);
+  $("#addColor").spectrum({
+      color: `${randColor}`,
+      preferredFormat: 'rgb'
+  });
+}
+
+function resizeGrid(newCols, newRows) {
+  resizeCanvas(250,250)
+  let cols = floor(width/gridSize);
+  let rows = floor(width/gridSize);
+
+  let dcols = newCols - cols;
+  let drows = newRows - rows;
+
+  let newGrid = [];
+  for(var index = 0; index<grid.length; index++) {
+    if (!grid[index]) {continue;}
+    let row = floor(index / cols);
+    let col = index - row * cols;
+    let newCol = col + row * dcols;
+    let newIndex = newCol + row * newCols;
+    newGrid[newIndex] = grid[index];
+  }
+
+  numCols = newCols;
+  numRows = newRows;
 }
 
 function draw() {
   background(100,100,200);
   drawGrid();
+  if (register["mouseleft"]) {
+    placeBlock();
+  }
+  if (register["mouseright"]) {
+    removeBlock();
+  }
   getCurrentBlock();
 
   addButton.mousePressed(addPressed);
   gridSizeBtn.mousePressed(setGridSize);
+  resize.mousePressed(() => resizeGrid(10,10));
 }
 
 function drawGrid() {
   stroke(255);
-  for(var x = 0; x < width; x += gridSize) {
+  for(var x = 0; x < numCols*gridSize; x += gridSize) {
     line(x, 0, x, height);
   }
-  for (var y = 0; y < height; y += gridSize) {
+  for (var y = 0; y < numRows*gridSize; y += gridSize) {
     line(0, y, width, y);
   }
 
@@ -46,40 +87,48 @@ function drawGrid() {
 }
 
 function mousePressed() {
-  let t = currentBlock;
-  let numCol = floor(width/gridSize);
-  console.log(numCol)
-  let numRow = floor(height/gridSize);
-  if (t && t.x <= width && t.x >= 0 && t.y >=0 && t.y<=height) {
-    index = t.x / gridSize + t.y * numCol / gridSize;
-    grid[index] = t;
+  if (mouseOnScreen()) {
+    register["mouse" + mouseButton] = true;
   }
 }
 
+function mouseReleased() {
+  register["mouse" + mouseButton] = false;
+}
+
+function placeBlock() {
+  let numCol = floor(width/gridSize);
+  let numRow = floor(height/gridSize);
+  if (currentBlock && mouseOnScreen) {
+    index = currentBlock.x / gridSize + currentBlock.y * numCol / gridSize;
+    grid[index] = {};
+    for (let key in currentBlock) {
+      grid[index][key] = currentBlock[key];
+    }
+  }
+}
+
+function removeBlock() {
+  let xx = (mouseX);
+  let yy = (mouseY);
+
+  grid = grid.filter((tile) => {
+    return !(tile.x + tile.w > xx && tile.x < xx &&
+      tile.y + tile.h > yy && tile.y < yy)
+  })
+}
+
+function mouseOnScreen() {
+  return (mouseX < width && mouseX >= 0 && mouseY >= 0 && mouseY < height);
+}
+
 function getCurrentBlock() {
-  for (let button of buttons) {
-    button.mousePressed(() => {
-      currentBlockType = select(".label", button).html();
-      currentBlockColor = select(".colorTag", button).style("background-color");
-      rgb = (currentBlockColor.substring(4,currentBlockColor.length-1).split(", "))
-      currentBlockColor = color(rgb[0], rgb[1], rgb[2]);
-    })
-  }
-
-  if (currentBlockType) {
-    currentBlock = {
-      type: currentBlockType,
-      x: mouseX - mouseX % gridSize,
-      y: mouseY - mouseY % gridSize,
-      w: gridSize,
-      h: gridSize,
-      clr: currentBlockColor
-    };
-
+    if (!currentBlock) {return};
+    currentBlock.x = mouseX - mouseX % gridSize;
+    currentBlock.y = mouseY - mouseY % gridSize;
     noStroke();
-    fill(currentBlockColor);
+    fill(currentBlock.clr);
     rect(currentBlock.x, currentBlock.y, currentBlock.w, currentBlock.h);
-  }
 }
 
 function setGridSize() {
@@ -89,34 +138,67 @@ function setGridSize() {
 }
 
 function addPressed() {
-  let addInput = select("#addInput");
-  let addColor = select("#addColor");
-  let name = addInput.value();
-  let clr = addColor.value();
+  let add = {
+    name: select("#addName").value(),
+    width: parseInt(select("#addWidth").value()) || gridSize,
+    height: parseInt(select("#addHeight").value()) || gridSize,
+    color: select("#addColor").value() || color(255,0,0)
+  };
 
-  if (name.length > 0 && clr) {
-    addInput.value("");
-    addTile(name, clr);
+
+  if (add.name.length > 0) {
+    select("#addName").value("");
+    let randColor = `rgb(${floor(random(256))}, ${floor(random(256))}, ${floor(random(256))})`
+    select("#addColor").value(randColor);
+    $("#addColor").spectrum({
+        color: `${randColor}`
+    });
+    addTile(add);
   }
 }
 
-function addTile(label, colorName) {
-  p = createElement("li");
-  p.html("<div class='colorTag' style='background-color:"
-        + colorName +"'></div>"
-        + "<div class='label'>" + label + "</div>");
-  db = createElement("button","Delete");
+function addTile(data) {
+  let p = {};
+  p.elem = createElement("li");
+  p.elem.html("<div class='colorTag' style='background-color:"
+        + data.color +"'></div>"
+        + "<div class='label'>" + data.name + "</div>");
+  let db = createElement("button","x");
   db.class('DeleteBtn');
-  eb = createElement("button","Edit");
-  eb.class('EditBtn');
+  db.parent(p.elem);
+
+  p.data = {
+    type: data.name,
+    width: data.width || gridSize,
+    height: data.height || gridSize,
+  }
+
+  db.p = p;
+
+  p.elem.mousePressed(() => {
+    if (mouseButton != "left") {return;}
+    let type = select(".label", p.elem).html();
+    let rgb = select(".colorTag", p.elem).style("background-color");
+    rgb = (rgb.substring(4,rgb.length-1).split(", "))
+    let clr = color(rgb[0], rgb[1], rgb[2]);
+
+    currentBlock = {
+      type: type,
+      x: 0,
+      y: 0,
+      w: p.data.width,
+      h: p.data.height,
+      clr: clr
+    };
+  })
+
+  db.mousePressed(() => {
+    if (!confirm(`Delete ${db.p.data.type}?`)) {return;}
+    db.p.elem.remove();
+    buttons = buttons.filter((b) => b !== db.p);
+  })
 
   buttons.push(p);
-  p.parent("buttons");
-  db.parent(p);
-  eb.parent(p);
-}
+  p.elem.parent("buttons");
 
-$("#addColor").spectrum({
-    color: "#f00",
-    preferredFormat: "rgb"
-});
+}

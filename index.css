@@ -1,25 +1,88 @@
+body {
+  background-color: #375174;
+  margin: 0px;
+  border: 4px solid #323232;
+}
+
 #myCanvas {
   display: inline-block;
+  margin-left: -4px;
+}
+
+#listTitle {
+  margin-bottom: 0px;
+  background-color: #8c9ead;
+  padding: 10px;
+  margin-right: 10px;
+}
+
+.toolbar {
+  width:100%;
+  height:50px;
+  background-color: #577082;
+}
+
+#addWidth, #addHeight {
+  width:32px;
+  font-size: 12px
+}
+
+#addName {
+  width:70%;
 }
 
 #buttonList {
   display: inline-block;
-  width: 25%;
+  width: 200;
+  height:100%;
   margin: 0px;
-
+  background-color: #577082;
+  padding:2px;
+  padding-left:10px;
   vertical-align: top;
 }
 
 #buttonList ul{
   list-style: none;
   padding: 0px;
+  height: 40%;
+  overflow-y: scroll;
+  margin-right: 10px;
+  margin-top: 0px;
+  background-color: #8c9ead;
 }
 
 #buttonList li {
   height:50px;
   margin: 2px;
-  border: 1px solid black;
+
   background-color: white;
+}
+
+#buttonList li:hover{
+  margin-left: 8px;
+}
+
+#addButtons {
+  background-color: #8c9fad;
+  padding: 10px;
+  margin-right: 10px;
+}
+
+#add {
+  border: 0px;
+  background-color: #f75111;
+  padding: 7px;
+  padding-left: 14px;
+  padding-right: 14px;
+  border-radius: 7px;
+  color: white;
+  margin-top: 4px;
+  margin-left: 90px;
+}
+
+#add:hover {
+  background-color: #ff8711
 }
 
 .colorTag {
@@ -36,10 +99,23 @@
   margin-bottom: 10px;
 }
 
-.editBtn, .deleteBtn {
-  float:right;
+.deleteBtn {
+  float: right;
+  background-color: #E15119;
+  color: white;
+  border: none;
+  border-radius: 0 0 0 3px;
+  padding: 0 4px 1px 6px;
+}
+.deleteBtn:hover {
+  background-color: #CCCCCC;
 }
 
-#buttonList li:hover{
-  background-color: rgb(250,250,200);
+#buttonList ul::-webkit-scrollbar {
+    width: 3px;
+    background-color:grey;
+}
+
+#buttonList ul::-webkit-scrollbar-thumb {
+  background-color:white;
 }
