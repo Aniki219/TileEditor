@@ -1,5 +1,5 @@
 body {
-  background-color: #375174;
+  background-color: #000;
   margin: 0px;
   border: 4px solid #323232;
 }
@@ -11,7 +11,7 @@ body {
 
 #listTitle {
   margin-bottom: 0px;
-  background-color: #8c9ead;
+  background-color: #8c9fad;
   padding: 10px;
   margin-right: 10px;
 }
@@ -19,7 +19,7 @@ body {
 .toolbar {
   width:100%;
   height:50px;
-  background-color: #577082;
+  background-color: #263247;
 }
 
 #addWidth, #addHeight {
@@ -36,7 +36,7 @@ body {
   width: 200;
   height:100%;
   margin: 0px;
-  background-color: #577082;
+  background-color: #263247;
   padding:2px;
   padding-left:10px;
   vertical-align: top;
