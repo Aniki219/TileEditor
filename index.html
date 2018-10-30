@@ -8,12 +8,14 @@
   <link rel='stylesheet' href='spectrum.css' />
   <script src="Grid.js"></script>
   <script src="buttonList.js"></script>
+  <script src="Toolbar.js"></script>
   <script src="Input.js"></script>
 
 </head>
 
 <body>
   <div class="toolbar">
+    <h2 style="color:white">MVCode Tile Editor: In Development</h2>
     <ul>
       <li>
         <input id="gridSizeInput">
@@ -23,9 +25,9 @@
     </ul>
   </div>
   <div id="buttonList">
-    <div id="listTitle">Tiles</div>
+    <div id="listTitle">Tiles List</div>
     <ul id="buttons"></ul>
-
+    <div id="listTitle">Add Tile</div>
     <div id="addButtons">
       <p>
         Name:
@@ -43,6 +45,9 @@
       </p>
       <button id="add">Add Tile</button>
     </div>
+
+    <div id="listTitle">Layers</div>
+    <ul id="buttons"></ul>
 
     <script>
       document.addEventListener('contextmenu', event => event.preventDefault());

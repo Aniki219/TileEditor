@@ -1,5 +1,22 @@
 var buttons = [];
-var addButton, gridSizeBtn, gridSizeInput, resize;
+var addButton;
+
+function initButtons() {
+  addTile({name: "Player", color: "rgb(0,0,255)"});
+  addTile({name: "Wall", color: "brown"});
+  addTile({name: "Hole", color: "black"});
+  addTile({name: "Enemy", color: "red"});
+
+  addButton = select("#add");
+  addButton.mousePressed(addPressed);
+
+  let randColor = `rgb(${floor(random(256))}, ${floor(random(256))}, ${floor(random(256))})`
+  select("#addColor").value(randColor);
+  $("#addColor").spectrum({
+      color: `${randColor}`,
+      preferredFormat: 'rgb'
+  });
+}
 
 function addPressed() {
   let add = {

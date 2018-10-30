@@ -1,3 +1,5 @@
+var register = {};
+
 function mousePressed() {
   if (mouseOnScreen()) {
     register["mouse" + mouseButton] = true;

@@ -1,5 +1,5 @@
 body {
-  background-color: #000;
+  background-color: #202031;
   margin: 0px;
   border: 4px solid #323232;
 }
@@ -10,16 +10,20 @@ body {
 }
 
 #listTitle {
-  margin-bottom: 0px;
-  background-color: #8c9fad;
-  padding: 10px;
-  margin-right: 10px;
+    margin-bottom: 0px;
+    background-color: #6464c8;
+    padding: 4px;
+    margin-right: 10px;
+    font-family: sans-serif;
+    font-size: 20px;
+    text-align: center;
+    color:white
 }
 
 .toolbar {
   width:100%;
   height:50px;
-  background-color: #263247;
+  background-color: #384b6a;
 }
 
 #addWidth, #addHeight {
@@ -36,27 +40,30 @@ body {
   width: 200;
   height:100%;
   margin: 0px;
-  background-color: #263247;
+  background-color: #394b6a;
   padding:2px;
   padding-left:10px;
   vertical-align: top;
 }
 
-#buttonList ul{
+#buttonList ul {
   list-style: none;
   padding: 0px;
-  height: 40%;
+  height: 160px;
   overflow-y: scroll;
   margin-right: 10px;
   margin-top: 0px;
+  margin-bottom: 10;
   background-color: #8c9ead;
 }
 
 #buttonList li {
-  height:50px;
-  margin: 2px;
-
-  background-color: white;
+  height: 32px;
+    margin: 1px;
+    background-color: #ffffff;
+    color: #393939;
+    font: menu;
+    font-size: 16;
 }
 
 #buttonList li:hover{
@@ -67,6 +74,14 @@ body {
   background-color: #8c9fad;
   padding: 10px;
   margin-right: 10px;
+  color: #263247;
+  font-family: sans-serif;
+  font-size: 14px;
+}
+
+#addButtons p {
+  margin-top: 0px;
+  margin-bottom: 5px;
 }
 
 #add {

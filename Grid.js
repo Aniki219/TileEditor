@@ -1,3 +1,14 @@
+var grid = [];
+
+var gridSize = 25;
+var numCols;
+var numRows;
+
+function initGrid() {
+  numCols = width/gridSize;
+  numRows = height/gridSize;
+}
+
 function resizeGrid(newCols, newRows) {
   resizeCanvas(250,250)
   let cols = floor(width/gridSize);
