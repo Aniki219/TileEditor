@@ -74,6 +74,8 @@ function addTile(data) {
 
   db.mousePressed(() => {
     if (!confirm(`Delete ${db.p.data.type}?`)) {return;}
+    console.log(currentBlock)
+    if (currentBlock.type == db.p.data.type) {currentBlock = null; setTool("move")}
     db.p.elem.remove();
     buttons = buttons.filter((b) => b !== db.p);
   })

@@ -5,18 +5,13 @@ function setup() {
   canvas.parent("myCanvas")
   initButtons();
   initToolbar();
+  toolsInit();
 }
 
 function draw() {
   background(100,100,200);
   drawGrid();
-  if (register["mouseleft"]) {
-    placeBlock();
-  }
-  if (register["mouseright"]) {
-    removeBlock();
-  }
-  drawCurrentBlock();
+  doTool();
   $('#myCanvas').css('max-width',() => {
     let w = $('body')[0].clientWidth;
     w = parseInt(w);
@@ -24,4 +19,4 @@ function draw() {
   })
 }
 
-$('body').mousedown(function(e){if(e.button==1)e.preventDefault()});
+$('#myCanvas').mousedown(function(e) {if(e.button==1) e.preventDefault()});

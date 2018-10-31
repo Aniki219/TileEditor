@@ -41,6 +41,8 @@ body {
 }
 
 .toolbar ul {
+  padding-left:10px;
+  height:32px;
   list-style: none;
 }
 
@@ -50,6 +52,24 @@ body {
   color:white;
   font: menu;
   font-size: 16px;
+}
+
+#paintTools li {
+  width:24px;
+  height:24px;
+  margin-left: 0px;
+  padding:4px;
+  -webkit-filter: invert(100%);
+}
+
+#paintTools li:hover {
+  background-color: #9B9B37;
+  outline: 2px solid #9B9B37;
+}
+
+#paintTools li img {
+  width: 100%;
+  height: 100%;
 }
 
 #gridSizeInput, #numColInput, #numRowInput {

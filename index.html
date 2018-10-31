@@ -27,8 +27,14 @@
           <li><button id="gridSizeUp">+</button></li>
         </ul>
       </li>
-      <li>
-        <button id="resize">Update</button>
+      <li style="vertical-align:top;">
+        <ul id="paintTools">
+          <li><img title="paintbrush" src="https://png.icons8.com/windows/40/000000/paint-brush.png"></li>
+          <li><img title="eye dropper" src="https://png.icons8.com/material-rounded/40/000000/color-dropper.png"></li>
+          <li><img title="fill" src="https://png.icons8.com/metro/40/000000/fill-color.png"></li>
+          <li><img title="select" src="https://png.icons8.com/ios-glyphs/40/000000/select-none.png"></li>
+          <li><img title="move" src="https://png.icons8.com/material-two-tone/40/000000/move.png"></li>
+        </ul>
       </li>
       <li>
         Columns:
@@ -72,12 +78,13 @@
     <ul id="layerButtons"></ul>
 
     <script>
-      document.addEventListener('contextmenu', event => event.preventDefault());
+      document.addEventListener('contextmenu', event => {if(mouseOnScreen()) event.preventDefault()});
     </script>
   </div>
 
   <div id="myCanvas"></div>
 
   <script src="Toolbar.js"></script>
+  <script src="Tools.js"></script>
   <script src="index.js"></script>
 </body>

@@ -69,7 +69,8 @@ function removeBlock() {
 }
 
 function drawCurrentBlock() {
-    if (!currentBlock) {return};
+    if (!currentBlock || !mouseOnScreen()) {cursor(); return};
+    noCursor();
     currentBlock.x = mouseX - mouseX % gridSize;
     currentBlock.y = mouseY - mouseY % gridSize;
     noStroke();
