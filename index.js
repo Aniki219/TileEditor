@@ -1,17 +1,11 @@
-
 var currentBlock;
 
-
-
 function setup() {
-  let canvas = createCanvas(500,500);
+  let canvas = createCanvas(640,480);
   canvas.parent("myCanvas")
   initButtons();
-  initGrid();
   initToolbar();
 }
-
-
 
 function draw() {
   background(100,100,200);
@@ -23,4 +17,11 @@ function draw() {
     removeBlock();
   }
   drawCurrentBlock();
+  $('#myCanvas').css('max-width',() => {
+    let w = $('body')[0].clientWidth;
+    w = parseInt(w);
+    return w-220 + "px"
+  })
 }
+
+$('body').mousedown(function(e){if(e.button==1)e.preventDefault()});

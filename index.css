@@ -7,6 +7,19 @@ body {
 #myCanvas {
   display: inline-block;
   margin-left: -4px;
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 95%
+}
+
+#myCanvas::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+#myCanvas::-webkit-scrollbar-thumb {
+  background-color: white;
+  border-radius: 8px;
 }
 
 #listTitle {
@@ -22,8 +35,67 @@ body {
 
 .toolbar {
   width:100%;
-  height:50px;
+  height:15%;
+  max-height:64px;
   background-color: #384b6a;
+}
+
+.toolbar ul {
+  list-style: none;
+}
+
+.toolbar li {
+  display:inline-block;
+  margin-left:10px;
+  color:white;
+  font: menu;
+  font-size: 16px;
+}
+
+#gridSizeInput, #numColInput, #numRowInput {
+  border: 0;
+  border-radius: 4px;
+  width: 30px;
+  padding: 2px;
+  text-align: center;
+}
+
+#gridSizeUpDown li{
+  display: block;
+  margin-top: 7px;
+  margin-bottom: 2px;
+  margin-left: -10px;
+}
+
+#gridSizeUpDown li button{
+  border: 0px;
+  border-radius: 2px;
+  width: 10;
+  height: 10px;
+  font-size: 12px;
+  padding: 2px;
+  vertical-align: bottom;
+  text-align: center;
+  margin-bottom: -6px;
+  background: white;
+  padding-bottom: 11px;
+  padding-top: 0;
+}
+
+#resize {
+  color: white;
+  background-color: #0390c5;
+  border: 0;
+  padding: 4px;
+  border-radius: 8px;
+}
+
+#clearAll {
+  color: white;
+  background-color: #f61146;
+  border: 0;
+  padding: 4px;
+  border-radius: 8px;
 }
 
 #addWidth, #addHeight {
@@ -38,7 +110,7 @@ body {
 #buttonList {
   display: inline-block;
   width: 200;
-  height:100%;
+  height:90%;
   margin: 0px;
   background-color: #394b6a;
   padding:2px;
@@ -74,6 +146,7 @@ body {
   background-color: #8c9fad;
   padding: 10px;
   margin-right: 10px;
+  margin-bottom: 10px;
   color: #263247;
   font-family: sans-serif;
   font-size: 14px;

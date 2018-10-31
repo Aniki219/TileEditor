@@ -1,10 +1,24 @@
-var gridSizeBtn, gridSizeInput, resize;
-
 function initToolbar() {
-  gridSizeBtn = select("#gridSizeBtn");
-  gridSizeInput = select("#gridSizeInput");
-  resize = select("#resize");
+  select("#resize").mousePressed(resizeGrid);
+  select("#clearAll").mousePressed(clearGrid);
 
-  gridSizeBtn.mousePressed(setGridSize);
-  resize.mousePressed(() => resizeGrid(10,10));
+  select("#gridSizeUp").mousePressed(() => setGridSize(gridSize+16));
+  select("#gridSizeDown").mousePressed(() => setGridSize(gridSize-16));
 }
+
+$('#gridSizeInput').on('keypress', (e) => {
+  if(e.which === 13){
+    let val = parseInt(e.target.value);
+    $(this).attr("disabled", "disabled");
+    setGridSize(val);
+    $(this).removeAttr("disabled");
+  }
+})
+
+$('#numColInput, #numRowInput').on('keypress', (e) => {
+  if(e.which === 13){
+    $(this).attr("disabled", "disabled");
+    resizeGrid();
+    $(this).removeAttr("disabled");
+  }
+})

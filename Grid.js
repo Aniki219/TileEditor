@@ -1,37 +1,36 @@
 var grid = [];
 
-var gridSize = 25;
+var gridSize = 32;
 var numCols;
 var numRows;
 
-function initGrid() {
-  numCols = width/gridSize;
-  numRows = height/gridSize;
-}
+function resizeGrid() {
+  let newCols = $('#numColInput')[0].value;
+  newCols = parseInt(newCols);
+  let newRows = $('#numRowInput')[0].value;
+  newRows = parseInt(newRows);
 
-function resizeGrid(newCols, newRows) {
-  resizeCanvas(250,250)
-  let cols = floor(width/gridSize);
-  let rows = floor(width/gridSize);
-
-  let dcols = newCols - cols;
-  let drows = newRows - rows;
+  let dcols = newCols - numCols;
+  let drows = newRows - numRows;
 
   let newGrid = [];
-  for(var index = 0; index<grid.length; index++) {
+  for(var index = 0; index<newCols*newRows; index++) {
     if (!grid[index]) {continue;}
-    let row = floor(index / cols);
-    let col = index - row * cols;
-    let newCol = col + row * dcols;
-    let newIndex = newCol + row * newCols;
+    let row = floor(index / numCols);
+    let newIndex = index + row * dcols;
     newGrid[newIndex] = grid[index];
   }
+  grid = newGrid;
 
   numCols = newCols;
   numRows = newRows;
+  resizeCanvas(newCols * gridSize, newRows * gridSize)
 }
 
 function drawGrid() {
+  numCols = width/gridSize;
+  numRows = height/gridSize;
+
   stroke(255);
   for(var x = 0; x < numCols*gridSize; x += gridSize) {
     line(x, 0, x, height);
@@ -78,8 +77,13 @@ function drawCurrentBlock() {
     rect(currentBlock.x, currentBlock.y, currentBlock.w, currentBlock.h);
 }
 
-function setGridSize() {
-  if (gridSizeInput.value() > 0) {
-    gridSize = parseInt(gridSizeInput.value());
+function clearGrid() {
+  grid = [];
+}
+
+function setGridSize(val) {
+  if (val > 0) {
+    gridSize = val;
+    select('#gridSizeInput').value(val)
   }
 }
