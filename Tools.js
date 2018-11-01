@@ -41,7 +41,7 @@ var tools = {
 var toolIcons;
 var currentTool;
 var prevTool = "paintbrush";
-var movingBlock = null;
+var movingBlocks = [];
 var selectionBox = null;
 
 function toolsInit() {
@@ -85,27 +85,28 @@ function floodFill() {
   if (!currentBlock || !mouseOnScreen()) {return;}
   let index = getMouseIndex();
   let giveUp = 1000;
-  let fillType = currentBlock.copy();
-  let replacing = (grid[index])?grid[index].type:null;
-  recFill(index, replacing, fillType, giveUp);
+  let fillBlock = currentBlock.copy();
+  let replaceType = (grid[index])?grid[index].type:null;
+  if (fillBlock.type && replaceType && replaceType == fillBlock.type){return;}
+  recFill(index, replaceType, fillBlock, giveUp);
 }
 
-function recFill(index, replacing, fillType, giveUp) {
+function recFill(index, replaceType, fillBlock, giveUp) {
   if (giveUp <= 0) {return;}
   if (index < 0 || index >= numRows * numCols) {return;}
-  if ((!grid[index] && replacing) || (grid[index] && !replacing)) {return;}
-  if (grid[index] && replacing && grid[index].type != replacing) {return;}
-  grid[index] = fillType.copy();
+  if ((!grid[index] && replaceType) || (grid[index] && !replaceType)) {return;}
+  if (grid[index] && replaceType && grid[index].type != replaceType) {return;}
+  grid[index] = fillBlock.copy();
   let row = floor(index/numCols);
   let col = index - row*numCols;
   grid[index].x = col * gridSize;
   grid[index].y = row * gridSize;
-  recFill(index+numCols, replacing, fillType, giveUp-1);
-  recFill(index-numCols, replacing, fillType, giveUp-1);
+  recFill(index+numCols, replaceType, fillBlock, giveUp-1);
+  recFill(index-numCols, replaceType, fillBlock, giveUp-1);
   if (col < numCols-1)
-  recFill(index+1, replacing, fillType, giveUp-1);
+  recFill(index+1, replaceType, fillBlock, giveUp-1);
   if (col > 0)
-  recFill(index-1, replacing, fillType, giveUp-1);
+  recFill(index-1, replaceType, fillBlock, giveUp-1);
 }
 
 function selectUp() {
@@ -132,23 +133,53 @@ function selectUp() {
 }
 
 function moveBlock() {
-  if (movingBlock) {
-    movingBlock.x = mouseX - movingBlock.ox;
-    movingBlock.y = mouseY - movingBlock.oy;
-    movingBlock.draw();
+  if (movingBlocks.length>0) {
+    for(let block of movingBlocks) {
+      block.x = mouseX - block.ox;
+      block.y = mouseY - block.oy;
+      block.draw();
+    }
   } else {
     let index = getMouseIndex();
-    if (!grid[index]) {return;}
-    movingBlock = grid[index].copy();
-    grid[index] = null;
-    movingBlock.move = true;
-    movingBlock.ox = mouseX - movingBlock.x;
-    movingBlock.oy = mouseY - movingBlock.y;
+    if (grid[index]) {
+      if(!grid[index].selected) {
+        if (!register[SHIFT]) {deselect();}
+        grid[index].selected = true;
+      }
+    } else {
+      deselect();
+      setTool("select");
+    }
+    for(let i = 0; i < grid.length; i++) {
+      if (grid[i] && grid[i].selected) {
+        let mb = grid[i].copy();
+        grid[i] = null;
+        mb.move = true;
+        mb.ox = mouseX - mb.x;
+        mb.oy = mouseY - mb.y;
+        movingBlocks.push(mb);
+      }
+    }
   }
+}
 
+function stopMove() {
+  for(let tile of movingBlocks) {
+    tile.move = false;
+    tile.x = round(tile.x / gridSize)*gridSize;
+    tile.y = round(tile.y / gridSize)*gridSize;
+    let index = getGridIndex(tile);
+    grid[index] = tile.copy();
+    grid[index].selected = true;
+  }
+  movingBlocks = [];
 }
 
 function selectDown() {
+  if (grid[getMouseIndex()] && grid[getMouseIndex()].selected) {
+    setTool("move");
+    return;
+  }
   if (!register[SHIFT] && !register[CONTROL]) {
     deselect();
   }
@@ -170,19 +201,6 @@ function selectDown() {
       y2: mouseY
     }
   }
-}
-
-function stopMove() {
-  let tile = movingBlock;
-  if (!movingBlock) {return;}
-    tile.move = false;
-    tile.x = round(tile.x / gridSize)*gridSize;
-    tile.y = round(tile.y / gridSize)*gridSize;
-    let index = getGridIndex(tile);
-    grid[index] = tile.copy();
-    grid[index].selected = true;
-
-  movingBlock = null;
 }
 
 function undo() {
@@ -235,6 +253,7 @@ function deselect() {
   for(let tile of grid) {
     if (!tile) {continue;}
     tile.selected = false;
+    tile.move = false;
   }
 }
 
@@ -242,13 +261,18 @@ function setCursor() {
   if (!mouseOnScreen()) {cursor(); return};
   switch (currentTool) {
     case "paintbrush":
-      (currentBlock)?noCursor():cursor();
+      cursor();
       break;
     case "eye dropper":
       cursor();
       break;
     case "fill":
-      (currentBlock)?noCursor():cursor();
+      if (!currentBlock) {noCursor();} else {
+        currentBlock.draw();
+        currentBlock.x = mouseX - mouseX % gridSize;
+        currentBlock.y = mouseY - mouseY % gridSize;
+      }
+      $('#myCanvas canvas').css('cursor', "url('https://i.imgur.com/4BEc2R0.png'), auto");
       break;
     case "select":
       cursor(CROSS);

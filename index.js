@@ -53,7 +53,6 @@ function gridChange() {
       return true;
     }
     if (lastGrid[i].type != grid[i].type) {
-      console.log("change!");
       return true;
     }
   }
