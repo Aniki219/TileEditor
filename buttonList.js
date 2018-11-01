@@ -62,14 +62,7 @@ function addTile(data) {
     rgb = (rgb.substring(4,rgb.length-1).split(", "))
     let clr = color(rgb[0], rgb[1], rgb[2]);
 
-    currentBlock = {
-      type: type,
-      x: 0,
-      y: 0,
-      w: p.data.width,
-      h: p.data.height,
-      clr: clr
-    };
+    currentBlock = new Tile(p.data.type, 0, 0, p.data.width, p.data.height,clr);
   })
 
   db.mousePressed(() => {

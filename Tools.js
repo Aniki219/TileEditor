@@ -8,7 +8,19 @@ var tools = {
   "move": {
     mouseDown: moveBlock,
     mouseUp: stopMove,
-  }
+  },
+
+  "undo": {
+    active: undo,
+    mouseDown: null,
+    mouseUp: null,
+  },
+
+  "redo": {
+    active: redo,
+    mouseDown: null,
+    mouseUp: null,
+  },
 }
 
 var toolIcons;
@@ -59,7 +71,7 @@ function moveBlock() {
   } else {
     let index = getMouseIndex();
     if (!grid[index]) {return;}
-    movingBlock = Object.assign(grid[index]);
+    movingBlock = grid[index].copy();
     grid[index] = null;
     movingBlock.move = true;
     movingBlock.ox = mouseX - movingBlock.x;
@@ -78,4 +90,21 @@ function stopMove() {
     grid[index] = Object.assign(tile);
 
   movingBlock = null;
+}
+
+function undo() {
+  if (currentTool == "undo") {setTool("paintbrush");}
+  if (prevGrids.length == 0) {return;}
+  reGrids.push(grid.slice())
+  grid = prevGrids.pop().slice();
+  lastGrid = grid.slice();
+
+}
+
+function redo() {
+  if (currentTool == "redo") {setTool("paintbrush");}
+  if (reGrids.length == 0) {return;}
+  prevGrids.push(grid.slice());
+  grid = reGrids.pop().slice();
+  lastGrid = grid.slice();
 }

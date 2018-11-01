@@ -14,13 +14,18 @@ function resizeGrid() {
   let drows = newRows - numRows;
 
   let newGrid = [];
-  for(var index = 0; index<newCols*newRows; index++) {
+  for(var index = 0; index<grid.length; index++) {
     if (!grid[index]) {continue;}
+
     let row = floor(index / numCols);
+    let col = index - row*numCols;
+    if (col >= newCols || row>=newRows) {continue;}
     let newIndex = index + row * dcols;
-    newGrid[newIndex] = grid[index];
+
+    newGrid[newIndex] = grid[index].copy();
   }
-  grid = newGrid;
+  grid = [];
+  grid = newGrid.slice();
 
   numCols = newCols;
   numRows = newRows;
@@ -51,10 +56,7 @@ function placeBlock() {
   let numRow = floor(height/gridSize);
   if (currentBlock && mouseOnScreen) {
     index = currentBlock.x / gridSize + currentBlock.y * numCol / gridSize;
-    grid[index] = new Tile();
-    for (let key in currentBlock) {
-      grid[index][key] = currentBlock[key];
-    }
+    grid[index] = new Tile(currentBlock.type, currentBlock.x, currentBlock.y, currentBlock.w, currentBlock.h, currentBlock.clr)
   }
 }
 
