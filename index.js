@@ -16,6 +16,8 @@ function draw() {
   background(100,100,200);
   drawGrid();
   doTool();
+  toolHotKeys();
+  setCursor();
   $('#myCanvas').css('max-width',() => {
     let w = $('body')[0].clientWidth;
     w = parseInt(w);
@@ -32,14 +34,6 @@ function draw() {
     if (reGrids.length > historyNum) {
       prevGrids.shift();
     }
-  }
-  if (register[CONTROL] && getKey('Z')) {
-    register['Z'.charCodeAt(0)] = false;
-    undo();
-  }
-  if (register[CONTROL] && getKey('Y')) {
-    register['Y'.charCodeAt(0)] = false;
-    redo();
   }
   for(let index = 0; index < grid.length; index++) {
     if (!grid[index]) {continue;}

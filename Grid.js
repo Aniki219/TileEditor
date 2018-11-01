@@ -1,6 +1,7 @@
 var grid = [];
 
 var gridSize = 32;
+var gridTransparency = 100;
 var numCols;
 var numRows;
 
@@ -36,18 +37,27 @@ function drawGrid() {
   numCols = width/gridSize;
   numRows = height/gridSize;
 
-  stroke(255);
+  for (let tile of grid) {
+    if (!tile) {continue;}
+    tile.outline();
+  }
+
+  for (let tile of grid) {
+    if (!tile) {continue;}
+    tile.draw();
+  }
+
+  for (let tile of grid) {
+    if (!tile) {continue;}
+    tile.outline2();
+  }
+
+  stroke(255,255,255,gridTransparency);
   for(var x = 0; x < numCols*gridSize; x += gridSize) {
     line(x, 0, x, height);
   }
   for (var y = 0; y < numRows*gridSize; y += gridSize) {
     line(0, y, width, y);
-  }
-
-  for (let tile of grid) {
-    if (!tile) {continue;}
-    fill(tile.clr);
-    rect(tile.x, tile.y, tile.w, tile.h);
   }
 }
 
@@ -74,13 +84,10 @@ function removeBlock() {
 }
 
 function drawCurrentBlock() {
-    if (!currentBlock || !mouseOnScreen()) {cursor(); return};
-    noCursor();
+  if (!currentBlock || !mouseOnScreen()) {return;}
     currentBlock.x = mouseX - mouseX % gridSize;
     currentBlock.y = mouseY - mouseY % gridSize;
-    noStroke();
-    fill(currentBlock.clr);
-    rect(currentBlock.x, currentBlock.y, currentBlock.w, currentBlock.h);
+    currentBlock.draw();
 }
 
 function getGridIndex(x, y = null) {

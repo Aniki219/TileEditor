@@ -15,6 +15,11 @@ var tools = {
     mouseUp: floodFill,
   },
 
+  "select": {
+    mouseDown: selectDown,
+    mouseUp: selectUp,
+  },
+
   "move": {
     mouseDown: moveBlock,
     mouseUp: stopMove,
@@ -37,6 +42,7 @@ var toolIcons;
 var currentTool;
 var prevTool = "paintbrush";
 var movingBlock = null;
+var selectionBox = null;
 
 function toolsInit() {
   let ul = select("#paintTools");
@@ -102,6 +108,29 @@ function recFill(index, replacing, fillType, giveUp) {
   recFill(index-1, replacing, fillType, giveUp-1);
 }
 
+function selectUp() {
+  if (selectionBox) {
+    let sx = min(selectionBox.x1, selectionBox.x2);
+    let sw = max(selectionBox.x1, selectionBox.x2) - sx;
+    let sy = min(selectionBox.y1, selectionBox.y2);
+    let sh = max(selectionBox.y1, selectionBox.y2) - sy;
+    for(tile of grid) {
+      if (!tile) {continue;}
+      if (tile.x + tile.w > sx && tile.x < sx + sw && tile.y + tile.h > sy && tile.y < sy + sh) {
+        tile.selected = !register[CONTROL];
+      }
+    }
+  }
+
+  selectionBox = null;
+  if (!mouseOnScreen()) {return;}
+
+  let index = getMouseIndex();
+  if (grid[index]) {
+    grid[index].selected = !register[CONTROL];
+  }
+}
+
 function moveBlock() {
   if (movingBlock) {
     movingBlock.x = mouseX - movingBlock.ox;
@@ -119,6 +148,30 @@ function moveBlock() {
 
 }
 
+function selectDown() {
+  if (!register[SHIFT] && !register[CONTROL]) {
+    deselect();
+  }
+  noFill()
+  stroke(255);
+  if (selectionBox) {
+    rect(selectionBox.x1, selectionBox.y1, selectionBox.x2 - selectionBox.x1, selectionBox.y2 - selectionBox.y1);
+  }
+
+  if (!mouseOnScreen()){return;}
+  if (selectionBox) {
+    selectionBox.x2 = mouseX;
+    selectionBox.y2 = mouseY;
+  } else {
+    selectionBox = {
+      x1: mouseX,
+      y1: mouseY,
+      x2: mouseX,
+      y2: mouseY
+    }
+  }
+}
+
 function stopMove() {
   let tile = movingBlock;
   if (!movingBlock) {return;}
@@ -126,7 +179,8 @@ function stopMove() {
     tile.x = round(tile.x / gridSize)*gridSize;
     tile.y = round(tile.y / gridSize)*gridSize;
     let index = getGridIndex(tile);
-    grid[index] = Object.assign(tile);
+    grid[index] = tile.copy();
+    grid[index].selected = true;
 
   movingBlock = null;
 }
@@ -152,4 +206,65 @@ function eyeDrop() {
   if (!mouseOnScreen() || !grid[getMouseIndex()]) {return;}
   currentBlock = grid[getMouseIndex()].copy();
   setTool(prevTool);
+}
+
+function toolHotKeys() {
+  if (register[DELETE] || register[BACKSPACE]) {
+    deleteSelected()
+  }
+  if (getKey('B') || getKey('P')) {setTool("paintbrush")};
+  if (getKey('F')) {setTool("fill")};
+  if (getKey('S')) {setTool("select")};
+  if (getKey('M') || getKey('P')) {setTool("move")};
+  if (getKey('D') || getKey('E')) {setTool("eye dropper")};
+  if (getKey('U') || register[CONTROL] && getKey('Z')) {
+    register['Z'.charCodeAt(0)] = false;
+    register['U'.charCodeAt(0)] = false;
+    undo();
+  }
+  if (getKey('R') || register[CONTROL] && getKey('Y')) {
+    register['Y'.charCodeAt(0)] = false;
+    redo();
+  }
+  if (register[ESCAPE]) {
+    deselect();
+  }
+}
+
+function deselect() {
+  for(let tile of grid) {
+    if (!tile) {continue;}
+    tile.selected = false;
+  }
+}
+
+function setCursor() {
+  if (!mouseOnScreen()) {cursor(); return};
+  switch (currentTool) {
+    case "paintbrush":
+      (currentBlock)?noCursor():cursor();
+      break;
+    case "eye dropper":
+      cursor();
+      break;
+    case "fill":
+      (currentBlock)?noCursor():cursor();
+      break;
+    case "select":
+      cursor(CROSS);
+      break;
+    case "move":
+      cursor("https://i.imgur.com/oARFZrU.png");
+      break;
+    default:
+      cursor();
+  }
+}
+
+function deleteSelected() {
+  for(let index = 0; index < grid.length; index++) {
+    let tile = grid[index];
+    if (!tile || !tile.selected) {continue;}
+    grid[index] = null;
+  }
 }
