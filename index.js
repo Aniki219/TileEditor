@@ -22,7 +22,6 @@ function draw() {
     return w-220 + "px"
   })
   if (gridChange()) {
-    console.log("change!")
     prevGrids.push(lastGrid.slice());
     lastGrid = grid.slice();
     reGrids = [];
@@ -41,6 +40,12 @@ function draw() {
   if (register[CONTROL] && getKey('Y')) {
     register['Y'.charCodeAt(0)] = false;
     redo();
+  }
+  for(let index = 0; index < grid.length; index++) {
+    if (!grid[index]) {continue;}
+    if (grid[index].type == "Clear") {
+      grid[index] = null;
+    }
   }
 }
 

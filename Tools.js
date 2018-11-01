@@ -5,6 +5,16 @@ var tools = {
     active: drawCurrentBlock
   },
 
+  "eye dropper": {
+    mouseDown: null,
+    mouseUp: eyeDrop,
+  },
+
+  "fill": {
+    mouseDown: null,
+    mouseUp: floodFill,
+  },
+
   "move": {
     mouseDown: moveBlock,
     mouseUp: stopMove,
@@ -25,6 +35,7 @@ var tools = {
 
 var toolIcons;
 var currentTool;
+var prevTool = "paintbrush";
 var movingBlock = null;
 
 function toolsInit() {
@@ -43,6 +54,7 @@ function setTool(name) {
   }
   let selectedToolIcon = toolIcons.find((x) => x.elt.title == name).parent();
   $(selectedToolIcon).css("outline", "2px solid black");
+  prevTool = currentTool;
   currentTool = name;
 }
 
@@ -61,6 +73,33 @@ function toolMouseUp() {
   if (tools[currentTool] && tools[currentTool].mouseUp) {
     tools[currentTool].mouseUp();
   }
+}
+
+function floodFill() {
+  if (!currentBlock || !mouseOnScreen()) {return;}
+  let index = getMouseIndex();
+  let giveUp = 1000;
+  let fillType = currentBlock.copy();
+  let replacing = (grid[index])?grid[index].type:null;
+  recFill(index, replacing, fillType, giveUp);
+}
+
+function recFill(index, replacing, fillType, giveUp) {
+  if (giveUp <= 0) {return;}
+  if (index < 0 || index >= numRows * numCols) {return;}
+  if ((!grid[index] && replacing) || (grid[index] && !replacing)) {return;}
+  if (grid[index] && replacing && grid[index].type != replacing) {return;}
+  grid[index] = fillType.copy();
+  let row = floor(index/numCols);
+  let col = index - row*numCols;
+  grid[index].x = col * gridSize;
+  grid[index].y = row * gridSize;
+  recFill(index+numCols, replacing, fillType, giveUp-1);
+  recFill(index-numCols, replacing, fillType, giveUp-1);
+  if (col < numCols-1)
+  recFill(index+1, replacing, fillType, giveUp-1);
+  if (col > 0)
+  recFill(index-1, replacing, fillType, giveUp-1);
 }
 
 function moveBlock() {
@@ -93,7 +132,7 @@ function stopMove() {
 }
 
 function undo() {
-  if (currentTool == "undo") {setTool("paintbrush");}
+  if (currentTool == "undo") {setTool(prevTool);}
   if (prevGrids.length == 0) {return;}
   reGrids.push(grid.slice())
   grid = prevGrids.pop().slice();
@@ -102,9 +141,15 @@ function undo() {
 }
 
 function redo() {
-  if (currentTool == "redo") {setTool("paintbrush");}
+  if (currentTool == "redo") {setTool(prevTool);}
   if (reGrids.length == 0) {return;}
   prevGrids.push(grid.slice());
   grid = reGrids.pop().slice();
   lastGrid = grid.slice();
+}
+
+function eyeDrop() {
+  if (!mouseOnScreen() || !grid[getMouseIndex()]) {return;}
+  currentBlock = grid[getMouseIndex()].copy();
+  setTool(prevTool);
 }

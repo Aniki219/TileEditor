@@ -2,6 +2,7 @@ var buttons = [];
 var addButton;
 
 function initButtons() {
+  addTile({name: "Clear", color: "white"});
   addTile({name: "Player", color: "rgb(0,0,255)"});
   addTile({name: "Wall", color: "brown"});
   addTile({name: "Hole", color: "black"});
