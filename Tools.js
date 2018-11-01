@@ -13,6 +13,7 @@ var tools = {
 
 var toolIcons;
 var currentTool;
+var movingBlock = null;
 
 function toolsInit() {
   let ul = select("#paintTools");
@@ -51,26 +52,30 @@ function toolMouseUp() {
 }
 
 function moveBlock() {
-  let index = getMouseIndex();
-  console.log(index)
-  if (!grid[index]) {return;}
-  let tile = grid[index];
-
-  if (tile.move) {
-    tile.x = mouseX + tile.ox;
-    tile.y = mouseY + tile.oy;
+  if (movingBlock) {
+    movingBlock.x = mouseX - movingBlock.ox;
+    movingBlock.y = mouseY - movingBlock.oy;
+    movingBlock.draw();
   } else {
-    tile.move = true;
-    tile.ox = mouseX - tile.x;
-    tile.oy = mouseY - tile.y;
+    let index = getMouseIndex();
+    if (!grid[index]) {return;}
+    movingBlock = Object.assign(grid[index]);
+    grid[index] = null;
+    movingBlock.move = true;
+    movingBlock.ox = mouseX - movingBlock.x;
+    movingBlock.oy = mouseY - movingBlock.y;
   }
 
 }
 
 function stopMove() {
-  for(let tile of grid) {
+  let tile = movingBlock;
+  if (!movingBlock) {return;}
     tile.move = false;
-    tile.x -= tile.x % gridSize;
-    tile.y -= tile.y % gridSize;
-  }
+    tile.x = round(tile.x / gridSize)*gridSize;
+    tile.y = round(tile.y / gridSize)*gridSize;
+    let index = getGridIndex(tile);
+    grid[index] = Object.assign(tile);
+
+  movingBlock = null;
 }

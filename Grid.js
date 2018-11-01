@@ -51,7 +51,7 @@ function placeBlock() {
   let numRow = floor(height/gridSize);
   if (currentBlock && mouseOnScreen) {
     index = currentBlock.x / gridSize + currentBlock.y * numCol / gridSize;
-    grid[index] = {};
+    grid[index] = new Tile();
     for (let key in currentBlock) {
       grid[index][key] = currentBlock[key];
     }
@@ -62,10 +62,13 @@ function removeBlock() {
   let xx = (mouseX);
   let yy = (mouseY);
 
-  grid = grid.filter((tile) => {
-    return !(tile.x + tile.w > xx && tile.x < xx &&
-      tile.y + tile.h > yy && tile.y < yy)
-  })
+  for(let tile of grid) {
+    if (tile && tile.x + tile.w > xx && tile.x < xx &&
+      tile.y + tile.h > yy && tile.y < yy) {
+        let index = getGridIndex(tile.x, tile.y);
+        grid[index] = null;
+      }
+  }
 }
 
 function drawCurrentBlock() {
@@ -76,6 +79,18 @@ function drawCurrentBlock() {
     noStroke();
     fill(currentBlock.clr);
     rect(currentBlock.x, currentBlock.y, currentBlock.w, currentBlock.h);
+}
+
+function getGridIndex(x, y = null) {
+  let col, row;
+  if (y != null) {
+    col = floor(x/gridSize);
+    row = floor(y/gridSize);
+  } else {
+    col = floor(x.x/gridSize);
+    row = floor(x.y/gridSize);
+  }
+  return col + row * numCols;
 }
 
 function clearGrid() {
