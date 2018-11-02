@@ -2,7 +2,7 @@ var buttons = [];
 var addButton;
 
 function initButtons() {
-  addTile({name: "Clear", color: "white"});
+  addTile({name: "Clear", color: "rgba(255,255,255,100)"});
   addTile({name: "Player", color: "rgb(0,0,255)"});
   addTile({name: "Wall", color: "brown"});
   addTile({name: "Hole", color: "black"});
@@ -60,6 +60,7 @@ function addTile(data) {
     if (mouseButton != "left") {return;}
     let type = select(".label", p.elem).html();
     let rgb = select(".colorTag", p.elem).style("background-color");
+    console.log(rgb)
     rgb = (rgb.substring(4,rgb.length-1).split(", "))
     let clr = color(rgb[0], rgb[1], rgb[2]);
 

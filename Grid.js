@@ -112,3 +112,24 @@ function setGridSize(val) {
     select('#gridSizeInput').value(val)
   }
 }
+
+function gridMouse() {
+  return {
+    x: mouseX - mouseX % gridSize,
+    y: mouseY - mouseY % gridSize
+  }
+}
+
+function gridChange() {
+  if (register["mouseleft"] || register["mouseright"]) {return false;}
+  for (let i = 0; i < grid.length; i++) {
+    if (!lastGrid[i] && !grid[i]) {continue;}
+    if ((!lastGrid[i] && grid[i]) || (lastGrid[i] && !grid[i])) {
+      return true;
+    }
+    if (lastGrid[i].type != grid[i].type) {
+      return true;
+    }
+  }
+  return false;
+}

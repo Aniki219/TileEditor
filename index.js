@@ -44,17 +44,8 @@ function draw() {
 }
 
 $('#myCanvas').mousedown(function(e) {if(e.button==1) e.preventDefault()});
-
-function gridChange() {
-  if (register["mouseleft"] || register["mouseright"]) {return false;}
-  for (let i = 0; i < grid.length; i++) {
-    if (!lastGrid[i] && !grid[i]) {continue;}
-    if ((!lastGrid[i] && grid[i]) || (lastGrid[i] && !grid[i])) {
-      return true;
-    }
-    if (lastGrid[i].type != grid[i].type) {
-      return true;
-    }
+$('body').bind('keydown', function(e) {
+  if(e.ctrlKey && (e.which == 'A'.charCodeAt(0))) {
+    e.preventDefault();
   }
-  return false;
-}
+});

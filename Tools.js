@@ -5,6 +5,11 @@ var tools = {
     active: drawCurrentBlock
   },
 
+  "rectangle": {
+    mouseDown: showRect,
+    mouseUp: placeRect,
+  },
+
   "eye dropper": {
     mouseDown: null,
     mouseUp: eyeDrop,
@@ -42,6 +47,7 @@ var toolIcons;
 var currentTool;
 var prevTool = "paintbrush";
 var movingBlocks = [];
+var rectBox = null;
 var selectionBox = null;
 
 function toolsInit() {
@@ -79,6 +85,48 @@ function toolMouseUp() {
   if (tools[currentTool] && tools[currentTool].mouseUp) {
     tools[currentTool].mouseUp();
   }
+}
+
+function showRect() {
+  if (!currentBlock) {return};
+  if (rectBox) {
+    rectBox.x2 = gridMouse().x;
+    rectBox.y2 = gridMouse().y;
+    for(let xx = min(rectBox.x1, rectBox.x2); xx <= max(rectBox.x1, rectBox.x2); xx+=gridSize) {
+      for(let yy = min(rectBox.y1, rectBox.y2); yy <= max(rectBox.y1, rectBox.y2); yy+=gridSize) {
+        fill(currentBlock.clr);
+        rect(xx, yy, currentBlock.w, currentBlock.h);
+      }
+    }
+  } else {
+    rectBox = {
+      x1: gridMouse().x,
+      y1: gridMouse().y,
+      x2: gridMouse().x,
+      y2: gridMouse().y,
+    }
+  }
+}
+
+function placeRect() {
+  if (!currentBlock) {return};
+  if (rectBox) {
+    rectBox.x2 = gridMouse().x;
+    rectBox.y2 = gridMouse().y;
+    for(let xx = min(rectBox.x1, rectBox.x2); xx <= max(rectBox.x1, rectBox.x2); xx+=gridSize) {
+      for(let yy = min(rectBox.y1, rectBox.y2); yy <= max(rectBox.y1, rectBox.y2); yy+=gridSize) {
+        let index = getGridIndex(xx, yy);
+        grid[index] = new Tile(currentBlock.type, xx, yy, currentBlock.w, currentBlock.h, currentBlock.clr);
+      }
+    }
+  }
+  rectBox = null;
+}
+
+function eyeDrop() {
+  if (!mouseOnScreen() || !grid[getMouseIndex()]) {return;}
+  currentBlock = grid[getMouseIndex()].copy();
+  setTool(prevTool);
 }
 
 function floodFill() {
@@ -132,6 +180,34 @@ function selectUp() {
   }
 }
 
+function selectDown() {
+  if (grid[getMouseIndex()] && grid[getMouseIndex()].selected) {
+    setTool("move");
+    return;
+  }
+  if (!register[SHIFT] && !register[CONTROL]) {
+    deselect();
+  }
+  noFill()
+  stroke(255);
+  if (selectionBox) {
+    rect(selectionBox.x1, selectionBox.y1, selectionBox.x2 - selectionBox.x1, selectionBox.y2 - selectionBox.y1);
+  }
+
+  if (!mouseOnScreen()){return;}
+  if (selectionBox) {
+    selectionBox.x2 = mouseX;
+    selectionBox.y2 = mouseY;
+  } else {
+    selectionBox = {
+      x1: mouseX,
+      y1: mouseY,
+      x2: mouseX,
+      y2: mouseY
+    }
+  }
+}
+
 function moveBlock() {
   if (movingBlocks.length>0) {
     for(let block of movingBlocks) {
@@ -169,38 +245,11 @@ function stopMove() {
     tile.x = round(tile.x / gridSize)*gridSize;
     tile.y = round(tile.y / gridSize)*gridSize;
     let index = getGridIndex(tile);
+    if (index < 0 || index >= numCols * numRows) {continue;}
     grid[index] = tile.copy();
     grid[index].selected = true;
   }
   movingBlocks = [];
-}
-
-function selectDown() {
-  if (grid[getMouseIndex()] && grid[getMouseIndex()].selected) {
-    setTool("move");
-    return;
-  }
-  if (!register[SHIFT] && !register[CONTROL]) {
-    deselect();
-  }
-  noFill()
-  stroke(255);
-  if (selectionBox) {
-    rect(selectionBox.x1, selectionBox.y1, selectionBox.x2 - selectionBox.x1, selectionBox.y2 - selectionBox.y1);
-  }
-
-  if (!mouseOnScreen()){return;}
-  if (selectionBox) {
-    selectionBox.x2 = mouseX;
-    selectionBox.y2 = mouseY;
-  } else {
-    selectionBox = {
-      x1: mouseX,
-      y1: mouseY,
-      x2: mouseX,
-      y2: mouseY
-    }
-  }
 }
 
 function undo() {
@@ -220,12 +269,6 @@ function redo() {
   lastGrid = grid.slice();
 }
 
-function eyeDrop() {
-  if (!mouseOnScreen() || !grid[getMouseIndex()]) {return;}
-  currentBlock = grid[getMouseIndex()].copy();
-  setTool(prevTool);
-}
-
 function toolHotKeys() {
   if (register[DELETE] || register[BACKSPACE]) {
     deleteSelected()
@@ -235,14 +278,20 @@ function toolHotKeys() {
   if (getKey('S')) {setTool("select")};
   if (getKey('M') || getKey('P')) {setTool("move")};
   if (getKey('D') || getKey('E')) {setTool("eye dropper")};
-  if (getKey('U') || register[CONTROL] && getKey('Z')) {
+  if (register[CONTROL] && getKey('Z')) {
     register['Z'.charCodeAt(0)] = false;
-    register['U'.charCodeAt(0)] = false;
     undo();
   }
-  if (getKey('R') || register[CONTROL] && getKey('Y')) {
+  if (register[CONTROL] && getKey('Y')) {
     register['Y'.charCodeAt(0)] = false;
     redo();
+  }
+  if (register[CONTROL] && getKey('A')) {
+    register['A'.charCodeAt(0)] = false;
+    for(let tile of grid) {
+      if (!tile) {continue;}
+      tile.selected = true;
+    }
   }
   if (register[ESCAPE]) {
     deselect();
