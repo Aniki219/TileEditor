@@ -10,6 +10,7 @@ function setup() {
   initButtons();
   initToolbar();
   toolsInit();
+  initTilesetWindow();
 }
 
 function draw() {
@@ -49,3 +50,4 @@ $('body').bind('keydown', function(e) {
     e.preventDefault();
   }
 });
+$('img').mousemove();

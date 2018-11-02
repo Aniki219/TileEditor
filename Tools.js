@@ -61,6 +61,7 @@ function toolsInit() {
 }
 
 function setTool(name) {
+  if (name == "") {return;}
   for(let tool of toolIcons) {
     $(tool.elt.parentNode).css("outline", "none");
   }

@@ -120,6 +120,13 @@ function gridMouse() {
   }
 }
 
+function getGridXY(x, y) {
+  return {
+    x: x - x % gridSize,
+    y: y - y % gridSize
+  }
+}
+
 function gridChange() {
   if (register["mouseleft"] || register["mouseright"]) {return false;}
   for (let i = 0; i < grid.length; i++) {

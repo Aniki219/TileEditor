@@ -34,7 +34,7 @@ body {
 }
 
 #tileSetBox {
-  background-color: white;
+  background-color: rgb(80,80,80);
   width:500px;
   height:400px;
   position:absolute;
@@ -44,10 +44,11 @@ body {
 
 #tileSetBox #centerDiv {
   display: block;
-  width: 80%;
-  height: 60%;
+  width:80%;
+  height:60%;
   overflow: auto;
-  background-color: black;
+  background-image: url("https://i.imgur.com/OQ5V391.png");
+
   margin: auto;
   position: absolute;
   top: 0;
@@ -56,8 +57,36 @@ body {
   right: 0;
 }
 
-#tileSetBox img {
+#tileset {
+  image-rendering: pixelated;
+  user-select: none;
+  border: none;
+}
 
+#centerDiv::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background-color:grey;
+}
+
+#centerDiv::-webkit-scrollbar-thumb {
+  background-color:white;
+  border-radius: 6px;
+}
+
+#tileSelector {
+  width:0;
+  height:0;
+  border: 1px solid white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(145, 172, 186, 0.46);
+  pointer-events: none;
+}
+
+#chooseTileset {
+  display:none;
 }
 
 #clip {
