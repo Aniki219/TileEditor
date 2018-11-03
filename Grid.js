@@ -66,7 +66,7 @@ function placeBlock() {
   let numRow = floor(height/gridSize);
   if (currentBlock && mouseOnScreen) {
     index = currentBlock.x / gridSize + currentBlock.y * numCol / gridSize;
-    grid[index] = new Tile(currentBlock.type, currentBlock.x, currentBlock.y, currentBlock.w, currentBlock.h, currentBlock.clr)
+    grid[index] = new Tile(currentBlock);
   }
 }
 

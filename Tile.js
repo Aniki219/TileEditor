@@ -1,30 +1,43 @@
 class Tile {
-  constructor(type, x, y, w, h, clr) {
-    this.type = type;
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
-    this.clr = clr;
+  constructor(data) {
+    this.type = data.type || "none";
+    this.x = data.x || 0;
+    this.y = data.y || 0;
+    this.w = data.w || gridSize;
+    this.h = data.h || gridSize;
+    this.clr = data.clr || null;
 
     this.selected = false;
     this.move = false;
     this.ox = 0;
     this.oy = 0;
+
+    this.src = data.src || null;
+    this.sx = data.sx || null;
+    this.sy = data.sy || null;
+    this.sw = data.sw || null;
+    this.sh = data.sh || null;
   }
 
   draw() {
     if(this.move) {
       this.outline();
-      let tclr = Object.assign(this.clr);
+      let tclr = (this.clr) ? Object.assign(this.clr) : color(0,0,255);
       tclr.levels[3] = 100;
       fill(tclr.levels);
       noStroke();
       rect(round(this.x/gridSize)*gridSize, round(this.y/gridSize)*gridSize, this.w, this.h);
     }
-    fill(this.clr);
-    noStroke();
-    rect(this.x, this.y, this.w, this.h);
+
+    if (this.clr) {
+      fill(this.clr);
+      noStroke();
+      rect(this.x, this.y, this.w, this.h);
+    } else if (this.src) {
+      let index = imageSourceArray.findIndex((src) => src == this.src);
+      image(imageFiles[index], this.x, this.y, this.w, this.h, this.sx, this.sy, this.sw, this.sh);
+    }
+
   }
 
   outline() {
@@ -52,6 +65,6 @@ class Tile {
   }
 
   copy() {
-    return new Tile(this.type, this.x, this.y, this.w, this.h, this.clr)
+    return new Tile(this)
   }
 }

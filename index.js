@@ -10,7 +10,6 @@ function setup() {
   initButtons();
   initToolbar();
   toolsInit();
-  initTilesetWindow();
 }
 
 function draw() {

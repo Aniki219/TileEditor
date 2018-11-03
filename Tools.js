@@ -41,6 +41,10 @@ var tools = {
     mouseDown: null,
     mouseUp: null,
   },
+
+  "none": {
+
+  }
 }
 
 var toolIcons;
@@ -65,10 +69,13 @@ function setTool(name) {
   for(let tool of toolIcons) {
     $(tool.elt.parentNode).css("outline", "none");
   }
-  let selectedToolIcon = toolIcons.find((x) => x.elt.title == name).parent();
-  $(selectedToolIcon).css("outline", "2px solid black");
   prevTool = currentTool;
   currentTool = name;
+
+  let selectedTool = toolIcons.find((x) => x.elt.title == name);
+  if (!selectedTool) {return;}
+  let selectedToolIcon = selectedTool.parent();
+  $(selectedToolIcon).css("outline", "2px solid black");
 }
 
 function doTool() {
@@ -117,7 +124,10 @@ function placeRect() {
     for(let xx = min(rectBox.x1, rectBox.x2); xx <= max(rectBox.x1, rectBox.x2); xx+=gridSize) {
       for(let yy = min(rectBox.y1, rectBox.y2); yy <= max(rectBox.y1, rectBox.y2); yy+=gridSize) {
         let index = getGridIndex(xx, yy);
-        grid[index] = new Tile(currentBlock.type, xx, yy, currentBlock.w, currentBlock.h, currentBlock.clr);
+        data = currentBlock.copy();
+        data.x = xx;
+        data.y = yy;
+        grid[index] = new Tile(data);
       }
     }
   }

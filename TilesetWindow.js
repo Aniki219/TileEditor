@@ -1,27 +1,5 @@
-// var s = function( sketch ) {
-//   with(sketch) {
-//     var x = 100;
-//     var y = 100;
-//
-//     sketch.setup = function() {
-//       createCanvas(200, 200);
-//     };
-//
-//     sketch.draw = function() {
-//       console.log(3)
-//       background(255,0,0);
-//       fill(255);
-//       rect(x,y,50,50);
-//     };
-//
-//     sketch.mousePressed = function() {
-//       console.log("mousepressed")
-//     }
-//   };
-// };
-//
-// var myp5 = new p5(s, document.getElementById('centerDiv'));
 var tileSelector = null;
+var editingTile;
 
 $("#tileset").mousedown((e)=>{
   var parentOffset = $(e.currentTarget).offset();
@@ -52,6 +30,15 @@ $("#tileset").mouseup((e)=>{
 });
 
 function drawTileSelector() {
+  if (!tileSelector) {
+    $("#tileSelector").css("top", 0);
+    $("#tileSelector").css("left", 0);
+    $("#tileSelector").css("width", 0);
+    $("#tileSelector").css("height", 0);
+    $("#tileSelector").css("border", "none");
+    return;
+  }
+  $("#tileSelector").css("border", "1px solid white");
   let sx = min(tileSelector.startCoords.x, tileSelector.endCoords.x);
   let sy = min(tileSelector.startCoords.y, tileSelector.endCoords.y);
   let ex = max(tileSelector.endCoords.x, tileSelector.startCoords.x)+gridSize;
@@ -61,19 +48,34 @@ function drawTileSelector() {
   $("#tileSelector").css("left", `${sx}`);
   $("#tileSelector").css("width", `${ex - sx}`);
   $("#tileSelector").css("height", `${ey - sy}`);
+
+  let ts = $("#tileSelector")[0].style;
+  editingTile.data = {
+    type: editingTile.data.type,
+    w: ex - sx,
+    h: ey - sy,
+    src: $("#tileset").attr("src"),
+    sx: sx,
+    sy: sy,
+    sw: ex - sx,
+    sh: ey - sy
+  }
 }
 
-function initTilesetWindow() {
+function initTilesetWindow(tile) {
+  setTool("none");
+  $("#tileSetBox").css("display", "block");
   let menu = $("#chooseTileset");
   menu.empty();
   menu.css("display","block");
   for (var name in tilesetImages) {
     menu.append(`<option value="${tilesetImages[name]}">${name}</option>`)
   }
+  editingTile = tile;
 }
 
 var tilesetImages = {
-  castle: "https://i.imgur.com/38qRsPz.png",
+  castle: "https://i.imgur.com/MnSjPVk.png",
   enemies: "https://i.imgur.com/UAVsbxs.png",
 }
 
@@ -81,3 +83,15 @@ $("#chooseTileset").change((e)=> {
   let src = e.currentTarget.value;
   $("#tileset").attr("src", src);
 })
+
+$("#tilesetCancel").click((event) => {
+  $('#tileSetBox').hide();
+  setTool("paintbrush");
+});
+
+$("#tilesetUpdate").click((event) => {
+  $('#tileSetBox').hide();
+  setTool("paintbrush");
+  let d = editingTile.data;
+  currentBlock = new Tile(d);
+});
