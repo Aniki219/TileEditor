@@ -29,14 +29,14 @@ class Tile {
       rect(round(this.x/gridSize)*gridSize, round(this.y/gridSize)*gridSize, this.w, this.h);
     }
 
-    if (this.clr) {
+    if (this.src) {
+      let index = imageSourceArray.findIndex((src) => src == this.src);
+      image(imageFiles[index], this.x, this.y, this.w, this.h, this.sx, this.sy, this.sw, this.sh);
+    } else if (this.clr) {
       fill(this.clr);
       noStroke();
       rect(this.x, this.y, this.w, this.h);
-    } else if (this.src) {
-      let index = imageSourceArray.findIndex((src) => src == this.src);
-      image(imageFiles[index], this.x, this.y, this.w, this.h, this.sx, this.sy, this.sw, this.sh);
-    }
+    } 
 
   }
 
