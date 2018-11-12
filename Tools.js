@@ -102,7 +102,7 @@ function showRect() {
     rectBox.y2 = gridMouse().y;
     for(let xx = min(rectBox.x1, rectBox.x2); xx <= max(rectBox.x1, rectBox.x2); xx+=gridSize) {
       for(let yy = min(rectBox.y1, rectBox.y2); yy <= max(rectBox.y1, rectBox.y2); yy+=gridSize) {
-        fill(currentBlock.clr);
+        if (currentBlock.clr) fill(currentBlock.clr);
         rect(xx, yy, currentBlock.w, currentBlock.h);
       }
     }

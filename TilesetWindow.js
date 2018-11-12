@@ -94,4 +94,24 @@ $("#tilesetUpdate").click((event) => {
   setTool("paintbrush");
   let d = editingTile.data;
   currentBlock = new Tile(d);
+  let colorTag = $(editingTile.elem.elt).children(".colorTag");
+  colorTag.css("background-image", `url(${editingTile.data.src})`);
+  colorTag.css("background-position-x", -editingTile.data.sx);
+  colorTag.css("background-position-y", -editingTile.data.sy);
+
+
+  var img = new Image();
+  img.onload = function() {
+    $(this).data("w", this.width);
+    $(this).data("h", this.height);
+    console.log($(this).data("w"))
+  }
+  img.src = editingTile.data.src;
+  let w = $(img).data("w");
+  let h = $(img).data("h");
+  let numx = editingTile.data.sw/gridSize;
+  let numy = editingTile.data.sh/gridSize;
+  //console.log(w, numx, `${w/numx}px ${h/numy}px`)
+  console.log($(img).data("w"))
+  colorTag.css("background-size", `${w/numx}px ${h/numy}px`);
 });
