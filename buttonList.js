@@ -39,11 +39,12 @@ function addPressed() {
 }
 
 function addTile(data) {
-  console.log(data)
   let p = {};
   p.elem = createElement("li");
-  p.elem.html("<div class='colorTag' style='background-color:"
-        + data.color +"'></div>"
+  p.elem.html("<img class='colorTag'"
+        + "src='https://i.imgur.com/RRTXt3w.png'"
+        + "style='background-color:"
+        + data.color +"'></img>"
         + "<div class='label'>" + data.type + "</div>");
   let db = createElement("button","x");
   db.class('DeleteBtn');
