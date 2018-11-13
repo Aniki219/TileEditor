@@ -13,10 +13,10 @@ class Tile {
     this.oy = 0;
 
     this.src = data.src || null;
-    this.sx = data.sx || null;
-    this.sy = data.sy || null;
-    this.sw = data.sw || null;
-    this.sh = data.sh || null;
+    this.sx = data.sx;
+    this.sy = data.sy;
+    this.sw = data.sw || gridSize;
+    this.sh = data.sh || gridSize;
   }
 
   draw() {
@@ -36,7 +36,7 @@ class Tile {
       fill(this.clr);
       noStroke();
       rect(this.x, this.y, this.w, this.h);
-    } 
+    }
 
   }
 

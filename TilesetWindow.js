@@ -99,4 +99,5 @@ $("#tilesetUpdate").click((event) => {
   colorTag.css("clip", `rect(${d.sy}px, ${d.sw + d.sx}px, ${d.sh+d.sy}px, ${d.sx}px)`);
   let s = 32/(max(d.sw, d.sh));
   colorTag.css("transform", `scale(${s}) translate(${-d.sx}px,${-d.sy}px)`);
+  colorTag.css("background-color", "white");
 });

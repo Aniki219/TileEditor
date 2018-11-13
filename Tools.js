@@ -1,6 +1,6 @@
 var tools = {
   "paintbrush": {
-    mouseDown: placeBlock,
+    mouseDown: () => placeBlock(currentBlock),
     mouseUp: null,
     active: drawCurrentBlock
   },
@@ -103,6 +103,16 @@ function showRect() {
     for(let xx = min(rectBox.x1, rectBox.x2); xx <= max(rectBox.x1, rectBox.x2); xx+=gridSize) {
       for(let yy = min(rectBox.y1, rectBox.y2); yy <= max(rectBox.y1, rectBox.y2); yy+=gridSize) {
         if (currentBlock.clr) fill(currentBlock.clr);
+        if (currentBlock.src) {
+          noFill();
+          stroke(255);
+          for(let xx = min(rectBox.x1, rectBox.x2); xx <= max(rectBox.x1, rectBox.x2); xx+=currentBlock.w) {
+            for(let yy = min(rectBox.y1, rectBox.y2); yy <= max(rectBox.y1, rectBox.y2); yy+=currentBlock.h) {
+              let imgIndex = imageSourceArray.findIndex((src) => src == currentBlock.src);
+              image(imageFiles[imgIndex], xx, yy, currentBlock.w, currentBlock.h, currentBlock.sx, currentBlock.sy, currentBlock.sw, currentBlock.sh);
+            }
+          }
+        }
         rect(xx, yy, currentBlock.w, currentBlock.h);
       }
     }
@@ -121,13 +131,13 @@ function placeRect() {
   if (rectBox) {
     rectBox.x2 = gridMouse().x;
     rectBox.y2 = gridMouse().y;
-    for(let xx = min(rectBox.x1, rectBox.x2); xx <= max(rectBox.x1, rectBox.x2); xx+=gridSize) {
-      for(let yy = min(rectBox.y1, rectBox.y2); yy <= max(rectBox.y1, rectBox.y2); yy+=gridSize) {
+    for(let xx = min(rectBox.x1, rectBox.x2); xx <= max(rectBox.x1, rectBox.x2); xx+=currentBlock.w) {
+      for(let yy = min(rectBox.y1, rectBox.y2); yy <= max(rectBox.y1, rectBox.y2); yy+=currentBlock.h) {
         let index = getGridIndex(xx, yy);
         data = currentBlock.copy();
         data.x = xx;
         data.y = yy;
-        grid[index] = new Tile(data);
+        placeBlock(data);
       }
     }
   }
@@ -143,7 +153,7 @@ function eyeDrop() {
 function floodFill() {
   if (!currentBlock || !mouseOnScreen()) {return;}
   let index = getMouseIndex();
-  let giveUp = 1000;
+  let giveUp = 100;
   let fillBlock = currentBlock.copy();
   let replaceType = (grid[index])?grid[index].type:null;
   if (fillBlock.type && replaceType && replaceType == fillBlock.type){return;}
@@ -155,17 +165,22 @@ function recFill(index, replaceType, fillBlock, giveUp) {
   if (index < 0 || index >= numRows * numCols) {return;}
   if ((!grid[index] && replaceType) || (grid[index] && !replaceType)) {return;}
   if (grid[index] && replaceType && grid[index].type != replaceType) {return;}
-  grid[index] = fillBlock.copy();
+
+  let block = fillBlock.copy();
   let row = floor(index/numCols);
   let col = index - row*numCols;
-  grid[index].x = col * gridSize;
-  grid[index].y = row * gridSize;
-  recFill(index+numCols, replaceType, fillBlock, giveUp-1);
-  recFill(index-numCols, replaceType, fillBlock, giveUp-1);
-  if (col < numCols-1)
-  recFill(index+1, replaceType, fillBlock, giveUp-1);
+  block.x = col * gridSize;
+  block.y = row * gridSize;
+  let numy = block.sh / gridSize;
+  let numx = block.sw / gridSize;
+
+  placeBlock(block);
+  recFill(index + numCols * numy, replaceType, fillBlock, giveUp-1);
+  recFill(index - numCols * numx, replaceType, fillBlock, giveUp-1);
+  if (col < numCols - numx)
+  recFill(index + numx, replaceType, fillBlock, giveUp-1);
   if (col > 0)
-  recFill(index-1, replaceType, fillBlock, giveUp-1);
+  recFill(index - numx, replaceType, fillBlock, giveUp-1);
 }
 
 function selectUp() {

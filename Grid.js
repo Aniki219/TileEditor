@@ -61,12 +61,26 @@ function drawGrid() {
   }
 }
 
-function placeBlock() {
+function placeBlock(block) {
   let numCol = floor(width/gridSize);
   let numRow = floor(height/gridSize);
-  if (currentBlock && mouseOnScreen) {
-    index = currentBlock.x / gridSize + currentBlock.y * numCol / gridSize;
-    grid[index] = new Tile(currentBlock);
+  if (block && mouseOnScreen) {
+    for(let xx = 0; xx < block.sw; xx += gridSize) {
+      for(let yy = 0; yy < block.sh; yy += gridSize) {
+        let t = new Tile(block);
+        t.x += xx;
+        t.y += yy;
+        t.sx += xx;
+        t.sy += yy;
+        t.sw = gridSize;
+        t.sh = gridSize;
+        t.w = gridSize;
+        t.h = gridSize;
+
+        index = t.x / gridSize + t.y * numCol / gridSize;
+        grid[index] = t;
+      }
+    }
   }
 }
 
@@ -129,6 +143,7 @@ function getGridXY(x, y) {
 
 function gridChange() {
   if (register["mouseleft"] || register["mouseright"]) {return false;}
+  if (grid.length != lastGrid.length) {return true;}
   for (let i = 0; i < grid.length; i++) {
     if (!lastGrid[i] && !grid[i]) {continue;}
     if ((!lastGrid[i] && grid[i]) || (lastGrid[i] && !grid[i])) {
