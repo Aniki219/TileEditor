@@ -26,7 +26,7 @@ class Tile {
       tclr.levels[3] = 100;
       fill(tclr.levels);
       noStroke();
-      rect(round(this.x/gridSize)*gridSize, round(this.y/gridSize)*gridSize, this.w, this.h);
+      rect(getGridXY(this.x), getGridIndex(this.y), this.w, this.h);
     }
 
     if (this.src) {

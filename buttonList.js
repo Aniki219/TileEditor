@@ -66,6 +66,7 @@ function addTile(data) {
     let clr = color(rgb[0], rgb[1], rgb[2]);
     p.data.clr = clr;
     currentBlock = new Tile(p.data);
+    pastedBlocks = [];
     initTilesetWindow(p);
   })
 

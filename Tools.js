@@ -1,6 +1,6 @@
 var tools = {
   "paintbrush": {
-    mouseDown: () => placeBlock(currentBlock),
+    mouseDown: brush,
     mouseUp: null,
     active: drawCurrentBlock
   },
@@ -66,6 +66,7 @@ function toolsInit() {
 
 function setTool(name) {
   if (name == "") {return;}
+  if (name != "move" && name != "select") {deselect();}
   for(let tool of toolIcons) {
     $(tool.elt.parentNode).css("outline", "none");
   }
@@ -92,6 +93,19 @@ function doTool() {
 function toolMouseUp() {
   if (tools[currentTool] && tools[currentTool].mouseUp) {
     tools[currentTool].mouseUp();
+  }
+}
+
+function brush() {
+  if (pastedBlocks.length > 0) {
+    pastedBlocks.forEach(b => {
+      let newBlock = b.copy();
+      newBlock.x = currentBlock.x - b.ox;
+      newBlock.y = currentBlock.y - b.oy;
+      placeBlock(newBlock);
+    })
+  } else {
+    placeBlock(currentBlock);
   }
 }
 
@@ -304,6 +318,14 @@ function toolHotKeys() {
   if (getKey('S')) {setTool("select")};
   if (getKey('M') || getKey('P')) {setTool("move")};
   if (getKey('D') || getKey('E')) {setTool("eye dropper")};
+  if (register[CONTROL] && getKey('C')) {
+    register['C'.charCodeAt(0)] = false;
+    copySelection();
+  }
+  if (register[CONTROL] && getKey('V')) {
+    register['V'.charCodeAt(0)] = false;
+    pasteSelection();
+  }
   if (register[CONTROL] && getKey('Z')) {
     register['Z'.charCodeAt(0)] = false;
     undo();

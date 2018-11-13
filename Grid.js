@@ -4,6 +4,8 @@ var gridSize = 32;
 var gridTransparency = 100;
 var numCols;
 var numRows;
+var copiedBlocks = [];
+var pastedBlocks = [];
 
 function resizeGrid() {
   let newCols = $('#numColInput')[0].value;
@@ -99,9 +101,17 @@ function removeBlock() {
 
 function drawCurrentBlock() {
   if (!currentBlock || !mouseOnScreen()) {return;}
-    currentBlock.x = mouseX - mouseX % gridSize;
-    currentBlock.y = mouseY - mouseY % gridSize;
-    currentBlock.draw();
+  currentBlock.x = mouseX - mouseX % gridSize;
+  currentBlock.y = mouseY - mouseY % gridSize;
+
+  if (pastedBlocks.length > 0) {
+    pastedBlocks.forEach(e => {
+      let index = imageSourceArray.findIndex((src) => src == e.src);
+      image(imageFiles[index], getGridXY(mouseX) - e.ox, getGridIndex(mouseY) - e.oy, e.w, e.h, e.sx, e.sy, e.sw, e.sh);
+    })
+    return;
+  }
+  currentBlock.draw();
 }
 
 function getGridIndex(x, y = null) {
@@ -154,4 +164,47 @@ function gridChange() {
     }
   }
   return false;
+}
+
+function selectedBlocks() {
+  return grid.filter(b => {
+    if (!b) {
+      return false;
+    } else {
+      return b.selected;
+    }
+  })
+}
+
+function copySelection() {
+
+  copiedBlocks = [];
+
+  let blocks = selectedBlocks();
+  if (!blocks || blocks.length <= 0) {return;}
+  let startX = blocks[0].x;
+  let startY = blocks[0].y;
+
+  blocks.forEach((e) => {
+    if (startX > e.x) {startX = e.x;}
+    if (startY > e.y) {startY = e.y;}
+  })
+
+  blocks.forEach((e) => {
+    let newBlock = e.copy();
+    newBlock.ox = startX - e.x;
+    newBlock.oy = startY - e.y;
+    copiedBlocks.push(newBlock);
+  });
+}
+
+function pasteSelection() {
+  setTool("paintbrush");
+  pastedBlocks = [];
+  copiedBlocks.forEach((e) => {
+    let newBlock = e.copy();
+    newBlock.ox = e.ox;
+    newBlock.oy = e.oy;
+    pastedBlocks.push(newBlock);
+  });
 }
