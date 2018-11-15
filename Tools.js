@@ -145,8 +145,8 @@ function placeRect() {
   if (rectBox) {
     rectBox.x2 = gridMouse().x;
     rectBox.y2 = gridMouse().y;
-    for(let xx = min(rectBox.x1, rectBox.x2); xx <= max(rectBox.x1, rectBox.x2); xx+=currentBlock.w) {
-      for(let yy = min(rectBox.y1, rectBox.y2); yy <= max(rectBox.y1, rectBox.y2); yy+=currentBlock.h) {
+    for(let xx = min(rectBox.x1, rectBox.x2); xx <= max(rectBox.x1, rectBox.x2) && xx < numCols * gridSize; xx+=currentBlock.w) {
+      for(let yy = min(rectBox.y1, rectBox.y2); yy <= max(rectBox.y1, rectBox.y2) && yy < numRows * gridSize; yy+=currentBlock.h) {
         let index = getGridIndex(xx, yy);
         data = currentBlock.copy();
         data.x = xx;
@@ -167,7 +167,7 @@ function eyeDrop() {
 function floodFill() {
   if (!currentBlock || !mouseOnScreen()) {return;}
   let index = getMouseIndex();
-  let giveUp = 100;
+  let giveUp = 10000;
   let fillBlock = currentBlock.copy();
   let replaceType = (grid[index])?grid[index].type:null;
   if (fillBlock.type && replaceType && replaceType == fillBlock.type){return;}

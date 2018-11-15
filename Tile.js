@@ -23,6 +23,7 @@ class Tile {
 
   draw() {
     if (!this.visible) {return;}
+    this.outline2();
     if(this.move) {
       this.outline();
       let tclr = (this.clr) ? Object.assign(this.clr) : color(0,0,255);
@@ -63,10 +64,10 @@ class Tile {
       let l = grid[index - 1];
       let r = grid[index + 1];
 
-      if (d && !d.selected && d.type != this.type) {line(this.x, this.y + this.h, this.x + this.w, this.y + this.h)}
-      if (u && !u.selected && u.type != this.type) {line(this.x, this.y, this.x + this.w, this.y)}
-      if (l && !l.selected && l.type != this.type && col > 0) {line(this.x, this.y, this.x, this.y + this.h)}
-      if (r && !r.selected && r.type != this.type && col < numCols - 1) {line(this.x + this.w, this.y, this.x + this.w, this.y + this.h)}
+      if (d && !(d.selected || d.highlight)) {line(this.x, this.y + this.h, this.x + this.w, this.y + this.h)}
+      if (u && !(u.selected || u.highlight)) {line(this.x, this.y, this.x + this.w, this.y)}
+      if (l && !(l.selected || l.highlight) && col > 0) {line(this.x, this.y, this.x, this.y + this.h)}
+      if (r && !(r.selected || r.highlight) && col < numCols - 1) {line(this.x + this.w, this.y, this.x + this.w, this.y + this.h)}
     }
   }
 

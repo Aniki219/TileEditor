@@ -112,7 +112,7 @@ function addTile(data) {
     if (currentBlock && currentBlock.type == db.p.data.type) {currentBlock = null; setTool("move")}
     db.p.elem.remove();
     buttons = buttons.filter((b) => b !== db.p);
-    grid = grid.filter((tile) => tile.type !== db.p.data.type)
+    grid = grid.filter((tile) => tile && tile.type !== db.p.data.type)
   })
 
   buttons.push(p);
