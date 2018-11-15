@@ -218,10 +218,6 @@ body {
   position: relative;
 }
 
-#buttonList li:hover{
-  margin-left: 8px;
-}
-
 #addButtons {
   background-color: #8c9fad;
   padding: 10px;
@@ -268,6 +264,17 @@ body {
   height: 100%;
   margin-left: 42px;
   margin-bottom: 10px;
+  overflow: hidden;
+  width: 60px;
+}
+
+.editBtn {
+  float: right;
+  background-color: #6464c8;
+  color: white;
+  border: none;
+  border-radius: 0 0 0 3px;
+  padding: 1px 6px 0px 6px;
 }
 
 .deleteBtn {
@@ -278,8 +285,13 @@ body {
   border-radius: 0 0 0 3px;
   padding: 0 4px 1px 6px;
 }
-.deleteBtn:hover {
-  background-color: #CCCCCC;
+
+.visible {
+  float: right;
+  width: 16px;
+  height: 16px;
+  padding-left: 4px;
+  padding-right: 4px;
 }
 
 #buttonList ul::-webkit-scrollbar {

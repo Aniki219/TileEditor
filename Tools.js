@@ -204,7 +204,7 @@ function selectUp() {
     let sy = min(selectionBox.y1, selectionBox.y2);
     let sh = max(selectionBox.y1, selectionBox.y2) - sy;
     for(tile of grid) {
-      if (!tile) {continue;}
+      if (!tile || !tile.visible) {continue;}
       if (tile.x + tile.w > sx && tile.x < sx + sw && tile.y + tile.h > sy && tile.y < sy + sh) {
         tile.selected = !register[CONTROL];
       }
@@ -258,7 +258,7 @@ function moveBlock() {
   } else {
     let index = getMouseIndex();
     if (grid[index]) {
-      if(!grid[index].selected) {
+      if(!grid[index].selected && grid[index].visible) {
         if (!register[SHIFT]) {deselect();}
         grid[index].selected = true;
       }
@@ -267,7 +267,7 @@ function moveBlock() {
       setTool("select");
     }
     for(let i = 0; i < grid.length; i++) {
-      if (grid[i] && grid[i].selected) {
+      if (grid[i] && grid[i].selected && grid[i].visible) {
         let mb = grid[i].copy();
         grid[i] = null;
         mb.move = true;
