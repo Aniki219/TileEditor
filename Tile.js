@@ -71,6 +71,42 @@ class Tile {
     }
   }
 
+  smartTile() {
+    let check = [];
+    let index = getGridIndex(this.x, this.y);
+    for (let c = -1; c < 2; c++) {
+      for (let r = -1; r < 2; r++) {
+        let coords = getColRow(index);
+        if (coords.col + c < 0 || coords.col + c >= numCols) {check[(c+1)+(r+1)*3] = 1; continue;}
+        if (coords.row + r < 0 || coords.row + r >= numRows) {check[(c+1)+(r+1)*3] = 1; continue;}
+        let i = index + c + (r * numCols);
+        check[(c+1)+(r+1)*3] = (grid[i] && grid[i].type == this.type)?1:0;
+      }
+    }
+    let str = check.toString().replace(/,/g,"");
+
+    //inner corners
+    if (/1111\S1110/.test(str)) {this.sx = 0; this.sy = 0}
+    else if (/1101\S1111/.test(str)) {this.sx = 0; this.sy = 64}
+    else if (/0111\S1111/.test(str)) {this.sx = 64; this.sy = 64}
+    else if (/1111\S1011/.test(str)) {this.sx = 64; this.sy = 0}
+    //sides
+    else if (/\S1\S1\S1\S0\S/.test(str)) {this.sx = 32; this.sy = 0}
+    else if (/\S0\S1\S1\S1\S/.test(str)) {this.sx = 32; this.sy = 64}
+    else if (/\S1\S0\S1\S1\S/.test(str)) {this.sx = 64; this.sy = 32}
+    else if (/\S1\S1\S0\S1\S/.test(str)) {this.sx = 0; this.sy = 32}
+    //outer corners
+    else if (/\S1\S1\S0\S0\S/.test(str)) {this.sx = 96; this.sy = 0}
+    else if (/\S0\S1\S0\S1\S/.test(str)) {this.sx = 96; this.sy = 32}
+    else if (/\S0\S0\S1\S1\S/.test(str)) {this.sx = 128; this.sy = 32}
+    else if (/\S1\S0\S1\S0\S/.test(str)) {this.sx = 128; this.sy = 0}
+    //top
+    else if (/\S1\S1\S1\S1\S/.test(str)) {this.sx = 32; this.sy = 32}
+    //default
+    else {this.sx = 32; this.sy = 32};
+    return(str);
+  }
+
   copy() {
     return new Tile(this)
   }

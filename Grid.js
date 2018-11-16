@@ -84,6 +84,7 @@ function placeBlock(block) {
       }
     }
   }
+  grid.forEach((tile) => {if (tile) {tile.smartTile()}});
 }
 
 function removeBlock() {
@@ -149,6 +150,12 @@ function getGridXY(x, y) {
     x: x - x % gridSize,
     y: y - y % gridSize
   }
+}
+
+function getColRow(index) {
+  let row = floor(index / numCols);
+  let col = index - row * numCols;
+  return {row: row, col: col};
 }
 
 function gridChange() {
