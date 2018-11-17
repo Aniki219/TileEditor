@@ -298,7 +298,7 @@ function undo() {
   reGrids.push(grid.slice())
   grid = prevGrids.pop().slice();
   lastGrid = grid.slice();
-
+  updateGrid();
 }
 
 function redo() {
@@ -307,6 +307,7 @@ function redo() {
   prevGrids.push(grid.slice());
   grid = reGrids.pop().slice();
   lastGrid = grid.slice();
+  updateGrid();
 }
 
 function toolHotKeys() {

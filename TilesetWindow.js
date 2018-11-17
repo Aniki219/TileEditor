@@ -65,18 +65,31 @@ function drawTileSelector() {
 function initTilesetWindow(tile) {
   setTool("none");
   $("#tileSetBox").css("display", "block");
+
+  $("#tileSelector").css("border", "1px solid white");
+  $("#tileSelector").css("top", `0`);
+  $("#tileSelector").css("left", `0`);
+  $("#tileSelector").css("width", `${gridSize}`);
+  $("#tileSelector").css("height", `${gridSize}`);
+
   let menu = $("#chooseTileset");
   menu.empty();
   menu.css("display","block");
-  for (var name in tilesetImages) {
-    menu.append(`<option value="${tilesetImages[name]}">${name}</option>`)
+  for (var image of imageSourceArray) {
+    menu.append(`<option value="${image}">${image}</option>`)
   }
   editingTile = tile;
-}
 
-var tilesetImages = {
-  castle: "https://i.imgur.com/MnSjPVk.png",
-  enemies: "https://i.imgur.com/UAVsbxs.png",
+  editingTile.data = {
+    type: tile.data.type,
+    w: gridSize,
+    h: gridSize,
+    src: $("#tileset").attr("src"),
+    sx: 0,
+    sy: 0,
+    sw: gridSize,
+    sh: gridSize
+  }
 }
 
 $("#chooseTileset").change((e)=> {
@@ -90,14 +103,15 @@ $("#tilesetCancel").click((event) => {
 });
 
 $("#tilesetUpdate").click((event) => {
-  $('#tileSetBox').hide();
   setTool("paintbrush");
   let d = editingTile.data;
   currentBlock = new Tile(d);
+  currentBlock.smartTile = $("#smartTileBox")[0].checked;
   let colorTag = $(editingTile.elem.elt).children(".colorTag");
   colorTag.attr("src", editingTile.data.src);
   colorTag.css("clip", `rect(${d.sy}px, ${d.sw + d.sx}px, ${d.sh+d.sy}px, ${d.sx}px)`);
   let s = 32/(max(d.sw, d.sh));
   colorTag.css("transform", `scale(${s}) translate(${-d.sx}px,${-d.sy}px)`);
   colorTag.css("background-color", "white");
+  $('#tileSetBox').hide();
 });

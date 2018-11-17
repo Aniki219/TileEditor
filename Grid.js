@@ -84,7 +84,6 @@ function placeBlock(block) {
       }
     }
   }
-  grid.forEach((tile) => {if (tile) {tile.smartTile()}});
 }
 
 function removeBlock() {
@@ -159,18 +158,24 @@ function getColRow(index) {
 }
 
 function gridChange() {
-  if (register["mouseleft"] || register["mouseright"]) {return false;}
-  if (grid.length != lastGrid.length) {return true;}
+  if (register["mouseleft"] || register["mouseright"]) {updateGrid(); return false;}
+  if (grid.length != lastGrid.length) {updateGrid(); return true;}
   for (let i = 0; i < grid.length; i++) {
     if (!lastGrid[i] && !grid[i]) {continue;}
     if ((!lastGrid[i] && grid[i]) || (lastGrid[i] && !grid[i])) {
+      updateGrid();
       return true;
     }
     if (lastGrid[i].type != grid[i].type) {
+      updateGrid();
       return true;
     }
   }
   return false;
+}
+
+function updateGrid() {
+  grid.forEach((tile) => {if (tile && tile.smartTile) {tile.doSmartTile()}});
 }
 
 function selectedBlocks() {

@@ -11,6 +11,7 @@ class Tile {
     this.move = false;
     this.visible = true;
     this.highlight = false;
+    this.smartTile = data.smartTile || false;
     this.ox = 0;
     this.oy = 0;
 
@@ -71,7 +72,7 @@ class Tile {
     }
   }
 
-  smartTile() {
+  doSmartTile() {
     let check = [];
     let index = getGridIndex(this.x, this.y);
     for (let c = -1; c < 2; c++) {
@@ -86,20 +87,20 @@ class Tile {
     let str = check.toString().replace(/,/g,"");
 
     //inner corners
-    if (/1111\S1110/.test(str)) {this.sx = 0; this.sy = 0}
-    else if (/1101\S1111/.test(str)) {this.sx = 0; this.sy = 64}
-    else if (/0111\S1111/.test(str)) {this.sx = 64; this.sy = 64}
-    else if (/1111\S1011/.test(str)) {this.sx = 64; this.sy = 0}
+    if (/1111\S1110/.test(str)) {this.sx = 96; this.sy = 0}
+    else if (/1101\S1111/.test(str)) {this.sx = 96; this.sy = 32}
+    else if (/0111\S1111/.test(str)) {this.sx = 128; this.sy = 32}
+    else if (/1111\S1011/.test(str)) {this.sx = 128; this.sy = 0}
     //sides
-    else if (/\S1\S1\S1\S0\S/.test(str)) {this.sx = 32; this.sy = 0}
-    else if (/\S0\S1\S1\S1\S/.test(str)) {this.sx = 32; this.sy = 64}
-    else if (/\S1\S0\S1\S1\S/.test(str)) {this.sx = 64; this.sy = 32}
-    else if (/\S1\S1\S0\S1\S/.test(str)) {this.sx = 0; this.sy = 32}
+    else if (/\S1\S1\S1\S0\S/.test(str)) {this.sx = 32; this.sy = 64}
+    else if (/\S0\S1\S1\S1\S/.test(str)) {this.sx = 32; this.sy = 0}
+    else if (/\S1\S0\S1\S1\S/.test(str)) {this.sx = 0; this.sy = 32}
+    else if (/\S1\S1\S0\S1\S/.test(str)) {this.sx = 64; this.sy = 32}
     //outer corners
-    else if (/\S1\S1\S0\S0\S/.test(str)) {this.sx = 96; this.sy = 0}
-    else if (/\S0\S1\S0\S1\S/.test(str)) {this.sx = 96; this.sy = 32}
-    else if (/\S0\S0\S1\S1\S/.test(str)) {this.sx = 128; this.sy = 32}
-    else if (/\S1\S0\S1\S0\S/.test(str)) {this.sx = 128; this.sy = 0}
+    else if (/\S1\S1\S0\S0\S/.test(str)) {this.sx = 64; this.sy = 64}
+    else if (/\S0\S1\S0\S1\S/.test(str)) {this.sx = 64; this.sy = 0}
+    else if (/\S0\S0\S1\S1\S/.test(str)) {this.sx = 0; this.sy = 0}
+    else if (/\S1\S0\S1\S0\S/.test(str)) {this.sx = 0; this.sy = 64}
     //top
     else if (/\S1\S1\S1\S1\S/.test(str)) {this.sx = 32; this.sy = 32}
     //default

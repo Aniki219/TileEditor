@@ -1,9 +1,10 @@
 var imageFiles = [];
 var imageSourceArray = [
-  "https://i.imgur.com/MnSjPVk.png",
-  "https://i.imgur.com/UAVsbxs.png",
+  "images/castleTileSet.png",
+  "images/castleSmartTile.png",
+  "images/grassSmartTile.png",
 ];
-
+//var imageSourceArray = [];
 
 function preload() {
   selectionBoxImg = loadImage("https://png.icons8.com/ios-glyphs/40/000000/select-none.png");
