@@ -3,7 +3,7 @@ var addButton;
 
 function initButtons() {
   addClearTile();
-  addTile({type: "PlayerPlayerPlayer", color: "rgb(0,0,255)"});
+  addTile({type: "Player", color: "rgb(0,0,255)"});
   addTile({type: "Wall", color: "brown"});
   addTile({type: "Hole", color: "black"});
   addTile({type: "Enemy", color: "red"});

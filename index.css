@@ -30,7 +30,22 @@ body {
     font-family: sans-serif;
     font-size: 20px;
     text-align: center;
-    color:white
+    color:white;
+    height: 24px;
+}
+
+.tileListBtn {
+  width: 40%;
+  border: none;
+  background-color: #8e8eff;
+  height: 100%;
+  color: white;
+  display: inline-block;
+  float: right;
+  margin-left: 4;
+  font-family: sans-serif;
+  font-size: 14px;
+  text-align: center;
 }
 
 #tileSetBox {
